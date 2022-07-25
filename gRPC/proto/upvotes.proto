@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package proto;
+
+message NewVote {
+  uint32 id = 1;
+  uint32 serviceId = 2;
+  uint32 userId = 3;
+  string vote = 4;
+  string comment = 5;
+}
+
+message Vote {
+  uint32 id = 1;
+  string vote = 4;
+  string comment = 5;
+}
+
+message FilterComment {
+  string comment = 1;
+}
+
+message Votes {
+  repeated Vote votes = 1;
+}
+
+message voteId {
+  uint32 voteId = 1;
+}
+
+message UpdateVote {
+  uint32 voteId = 1;
+  string vote = 4;
+  string comment = 5;
+}
+
+message serviceId {
+  uint32 serviceId = 1;
+}
+
+
+message Report {
+  uint32 serviceId = 1;
+  uint64 totalUpvotes = 2;
+  uint64 totalDownvotes = 3;
+}
+
+message Comment {
+  uint32 serviceId = 1;
+  string comment = 2;
+}
+
+message Comments {
+  repeated Comment comments = 1;
+}
+
+service UpvoteService {
+  rpc Create (NewVote) returns (Vote) {}
+  rpc Read (FilterComment) returns (Votes) {}
+  rpc ReadById (voteId) returns (Vote) {}
+  rpc Update (UpdateVote) returns (voteId) {}
+  rpc Delete (voteId) returns (voteId) {}
+  rpc ReportByServiceId (serviceId) returns (Report) {}
+  rpc ComementsByServiceId (serviceId) returns (Comments) {}
+}
