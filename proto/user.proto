@@ -23,9 +23,14 @@ message Users {
   repeated User users = 1;
 }
 
+message UserId {
+  string userId = 1;
+}
+
 service UserService {
   rpc Create (NewUser) returns (User) {}
   rpc Read (Filter) returns (Users) {}
+  rpc ReadById (UserId) returns (User) {}
 }
 
 // command to create pb:
