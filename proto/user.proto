@@ -15,8 +15,17 @@ message User {
   string password = 4;
 }
 
+message Filter {
+  string name = 1;
+}
+
+message Users {
+  repeated User users = 1;
+}
+
 service UserService {
   rpc Create (NewUser) returns (User) {}
+  rpc Read (Filter) returns (Users) {}
 }
 
 // command to create pb:
