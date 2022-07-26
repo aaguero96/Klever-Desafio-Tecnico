@@ -11,13 +11,13 @@ import (
 func main() {
 	lis, err := net.Listen("tcp", ":50052")
 	if err != nil {
-		log.Fatal("failed to listen: %v", err)
+		log.Fatal(err)
 	}
 
 	s := grpc.NewServer()
 	user_server.UserService(s, lis)
 
 	if err := s.Serve(lis); err != nil {
-		log.Fatal("failed to serve: %v", err)
+		log.Fatal(err)
 	}
 }
