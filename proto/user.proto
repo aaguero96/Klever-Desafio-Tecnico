@@ -9,7 +9,7 @@ message NewUser {
 }
 
 message User {
-  uint32 userId = 1;
+  string userId = 1;
   string name = 2;
   string email = 3;
   string password = 4;
