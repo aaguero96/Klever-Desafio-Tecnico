@@ -26,10 +26,10 @@ func (s UserServer) Create(ctx context.Context, in *pb.NewUser) (*pb.User, error
 
 	userCollection := db.Collection("users")
 
-	newUser := bson.D{
-		{"name", in.GetName()},
-		{"email", in.GetEmail()},
-		{"password", in.GetPassword()},
+	newUser := bson.M{
+		"name":     in.GetName(),
+		"email":    in.GetEmail(),
+		"password": in.GetPassword(),
 	}
 
 	result, err := userCollection.InsertOne(context.TODO(), newUser)
@@ -61,8 +61,8 @@ func (s UserServer) Read(ctx context.Context, in *pb.Filter) (*pb.Users, error) 
 	filter := bson.D{{}}
 	filter = append(filter, bson.E{
 		Key: "name",
-		Value: bson.D{
-			{"$regex", primitive.Regex{Pattern: "^" + in.GetName() + ".*", Options: "i"}},
+		Value: bson.M{
+			"$regex": primitive.Regex{Pattern: "^" + in.GetName() + ".*", Options: "i"},
 		},
 	})
 
