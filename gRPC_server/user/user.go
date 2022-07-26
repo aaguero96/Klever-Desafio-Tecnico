@@ -75,9 +75,22 @@ func (s UserServer) Read(ctx context.Context, in *pb.Filter) (*pb.Users, error) 
 	var result []*pb.User
 
 	for cur.Next(context.TODO()) {
-		user := pb.User{}
-		if err = cur.Decode(&user); err != nil {
+		type DecodedUser struct {
+			ObjectID primitive.ObjectID `bson:"_id"`
+			Name     string
+			Email    string
+			Password string
+		}
+		var decodedUser DecodedUser
+
+		if err = cur.Decode(&decodedUser); err != nil {
 			return &pb.Users{}, err
+		}
+		user := pb.User{
+			Name:     decodedUser.Name,
+			Email:    decodedUser.Email,
+			Password: decodedUser.Password,
+			UserId:   decodedUser.ObjectID.Hex(),
 		}
 		result = append(result, &user)
 	}
