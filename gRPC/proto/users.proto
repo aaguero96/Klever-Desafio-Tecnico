@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package proto;
 
+option go_package = "./;backend";
+
 message NewUser {
   string name = 1;
   string email = 2;

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package proto;
 
+option go_package = "./;backend";
+
 message NewService {
   string name = 1;
   string site = 2;

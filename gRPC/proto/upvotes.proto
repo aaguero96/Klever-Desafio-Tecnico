@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package proto;
 
+option go_package = "./;backend";
+
 message NewVote {
   uint32 id = 1;
   uint32 serviceId = 2;
