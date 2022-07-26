@@ -13,4 +13,10 @@ var userRoutes = []Routes{
 		Function:       user_controller.Create,
 		Authentication: false,
 	},
+	{
+		Endpoint:       "/users",
+		Method:         http.MethodGet,
+		Function:       user_controller.Read,
+		Authentication: false,
+	},
 }
