@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	user_controller "github.com/aaguero96/Klever-Desafio-Tecnico/api/controllers"
+	user_controller "github.com/aaguero96/Klever-Desafio-Tecnico/api/controllers/user"
 )
 
 var userRoutes = []Routes{
