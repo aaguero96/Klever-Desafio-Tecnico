@@ -27,10 +27,16 @@ message UserId {
   string userId = 1;
 }
 
+// Returns only a bool
+message Empty {
+  bool return = 1;
+}
+
 service UserService {
   rpc Create (NewUser) returns (User) {}
   rpc Read (Filter) returns (Users) {}
   rpc ReadById (UserId) returns (User) {}
+  rpc Update (User) returns (Empty) {}
 }
 
 // command to create pb:
