@@ -16,22 +16,18 @@ type Routes struct {
 
 // AllRoutes coloca todas as rotas dentro do router
 func AllRoutes(r *mux.Router) *mux.Router {
-	routes := userRoutes
-
-	for _, route := range routes {
-		r.HandleFunc(
-			route.Endpoint,
-			route.Function,
-		).Methods(route.Method)
+	routesSlice := [][]Routes{
+		userRoutes,
+		serviceRoutes,
 	}
 
-	routes = serviceRoutes
-
-	for _, route := range routes {
-		r.HandleFunc(
-			route.Endpoint,
-			route.Function,
-		).Methods(route.Method)
+	for _, routes := range routesSlice {
+		for _, route := range routes {
+			r.HandleFunc(
+				route.Endpoint,
+				route.Function,
+			).Methods(route.Method)
+		}
 	}
 
 	return r
