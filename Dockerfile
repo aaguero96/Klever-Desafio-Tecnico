@@ -8,4 +8,4 @@ RUN go mod tidy
 
 COPY . .
 
-CMD ["go", "run", "gRPC_server/main.go"]
+CMD ["go", "run", "api/main.go"]

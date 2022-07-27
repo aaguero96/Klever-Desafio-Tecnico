@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: go run gRPC_server/main.go
+  web: go run api/main.go
