@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UpvoteServiceClient interface {
 	Create(ctx context.Context, in *NewUpvote, opts ...grpc.CallOption) (*Upvote, error)
+	Delete(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*EmptyUpvote, error)
 }
 
 type upvoteServiceClient struct {
@@ -42,11 +43,21 @@ func (c *upvoteServiceClient) Create(ctx context.Context, in *NewUpvote, opts ..
 	return out, nil
 }
 
+func (c *upvoteServiceClient) Delete(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*EmptyUpvote, error) {
+	out := new(EmptyUpvote)
+	err := c.cc.Invoke(ctx, "/UpvoteService/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UpvoteServiceServer is the server API for UpvoteService service.
 // All implementations must embed UnimplementedUpvoteServiceServer
 // for forward compatibility
 type UpvoteServiceServer interface {
 	Create(context.Context, *NewUpvote) (*Upvote, error)
+	Delete(context.Context, *UpvoteId) (*EmptyUpvote, error)
 	mustEmbedUnimplementedUpvoteServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedUpvoteServiceServer struct {
 
 func (UnimplementedUpvoteServiceServer) Create(context.Context, *NewUpvote) (*Upvote, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedUpvoteServiceServer) Delete(context.Context, *UpvoteId) (*EmptyUpvote, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedUpvoteServiceServer) mustEmbedUnimplementedUpvoteServiceServer() {}
 
@@ -88,6 +102,24 @@ func _UpvoteService_Create_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UpvoteService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpvoteId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UpvoteServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/UpvoteService/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UpvoteServiceServer).Delete(ctx, req.(*UpvoteId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UpvoteService_ServiceDesc is the grpc.ServiceDesc for UpvoteService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var UpvoteService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _UpvoteService_Create_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _UpvoteService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
