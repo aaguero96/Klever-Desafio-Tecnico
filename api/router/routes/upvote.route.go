@@ -14,6 +14,24 @@ var upvoteRoutes = []Routes{
 		Authentication: false,
 	},
 	{
+		Endpoint:       "/upvotes",
+		Method:         http.MethodGet,
+		Function:       upvote_controller.Read,
+		Authentication: false,
+	},
+	{
+		Endpoint:       "/upvotes/{upvoteId}",
+		Method:         http.MethodGet,
+		Function:       upvote_controller.ReadById,
+		Authentication: false,
+	},
+	{
+		Endpoint:       "/upvotes/{upvoteId}",
+		Method:         http.MethodPut,
+		Function:       upvote_controller.Update,
+		Authentication: false,
+	},
+	{
 		Endpoint:       "/upvotes/{upvoteId}",
 		Method:         http.MethodDelete,
 		Function:       upvote_controller.Delete,
