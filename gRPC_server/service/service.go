@@ -94,6 +94,32 @@ func (s ServiceServer) Read(ctx context.Context, in *pb.FilterService) (*pb.Serv
 	return &pb.Services{Services: result}, nil
 }
 
+func (s ServiceServer) ReadById(ctx context.Context, in *pb.ServiceId) (*pb.Service, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return &pb.Service{}, err
+	}
+
+	userCollection := db.Collection("services")
+
+	userId, err := primitive.ObjectIDFromHex(in.GetServiceId())
+	if err != nil {
+		return &pb.Service{}, err
+	}
+
+	filter := bson.M{"_id": userId}
+
+	var result *pb.Service
+
+	err = userCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		return &pb.Service{}, err
+	}
+
+	result.ServiceId = in.GetServiceId()
+	return result, nil
+}
+
 func ServiceService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterServiceServiceServer(s, &ServiceServer{})
 	log.Printf("server listening at %v", lis.Addr())
