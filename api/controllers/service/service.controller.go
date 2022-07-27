@@ -132,3 +132,27 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
+
+func Delete(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	serviceId := params["serviceId"]
+
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer conn.Close()
+
+	c := pb.NewServiceServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	_, err = c.Delete(ctx, &pb.ServiceId{
+		ServiceId: serviceId,
+	})
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
