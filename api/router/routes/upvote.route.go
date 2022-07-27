@@ -13,4 +13,10 @@ var upvoteRoutes = []Routes{
 		Function:       upvote_controller.Create,
 		Authentication: false,
 	},
+	{
+		Endpoint:       "/upvotes/{upvoteId}",
+		Method:         http.MethodDelete,
+		Function:       upvote_controller.Delete,
+		Authentication: false,
+	},
 }
