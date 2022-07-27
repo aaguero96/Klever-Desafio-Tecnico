@@ -17,8 +17,17 @@ message Upvote {
   string comment = 5;
 }
 
+message UpvoteId {
+  string upvoteId = 1;
+}
+
+message EmptyUpvote {
+  bool return = 1;
+}
+
 service UpvoteService {
   rpc Create (NewUpvote) returns (Upvote) {}
+  rpc Delete (UpvoteId) returns (EmptyUpvote) {}
 }
 
 // command to create pb:
