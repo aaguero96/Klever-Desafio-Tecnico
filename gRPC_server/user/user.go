@@ -155,6 +155,29 @@ func (s UserServer) Update(ctx context.Context, in *pb.User) (*pb.Empty, error) 
 	return nil, nil
 }
 
+func (s UserServer) Delete(ctx context.Context, in *pb.UserId) (*pb.Empty, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return nil, err
+	}
+
+	userCollection := db.Collection("users")
+
+	userId, err := primitive.ObjectIDFromHex(in.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{"_id": userId}
+
+	_, err = userCollection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
 func UserService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterUserServiceServer(s, &UserServer{})
 	log.Printf("server listening at %v", lis.Addr())
