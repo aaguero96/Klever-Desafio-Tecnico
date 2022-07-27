@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/models"
@@ -45,4 +46,26 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	service.ID = response.ServiceId
 	responses.JSON(w, http.StatusCreated, service)
+}
+
+func Read(w http.ResponseWriter, r *http.Request) {
+	name := strings.ToLower(r.URL.Query().Get("serviceName"))
+
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer conn.Close()
+
+	c := pb.NewServiceServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	response, err := c.Read(ctx, &pb.FilterService{
+		Name: name,
+	})
+
+	responses.JSON(w, http.StatusCreated, response.Services)
 }
