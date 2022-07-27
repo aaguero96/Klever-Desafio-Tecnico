@@ -95,3 +95,42 @@ func ReadById(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusCreated, response)
 }
+
+func Update(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.Error(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var user models.User
+	if err = json.Unmarshal(body, &user); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	params := mux.Vars(r)
+
+	userId := params["userId"]
+
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer conn.Close()
+
+	c := pb.NewUserServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	_, err = c.Update(ctx, &pb.User{
+		UserId:   userId,
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	})
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
