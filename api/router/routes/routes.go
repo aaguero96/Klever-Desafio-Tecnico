@@ -19,6 +19,7 @@ func AllRoutes(r *mux.Router) *mux.Router {
 	routesSlice := [][]Routes{
 		userRoutes,
 		serviceRoutes,
+		upvoteRoutes,
 	}
 
 	for _, routes := range routesSlice {
