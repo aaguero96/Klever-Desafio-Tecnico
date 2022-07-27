@@ -79,8 +79,8 @@ func (s UpvoteServer) Read(ctx context.Context, in *pb.FilterUpvote) (*pb.Upvote
 	for cur.Next(context.TODO()) {
 		type DecodedUpvote struct {
 			ObjectID  primitive.ObjectID `bson:"_id"`
-			ServiceID string
-			UserId    string
+			ServiceID string             `bson:"service_id"`
+			UserID    string             `bson:"user_id"`
 			Vote      string
 			Comment   string
 		}
