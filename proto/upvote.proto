@@ -17,6 +17,14 @@ message Upvote {
   string comment = 5;
 }
 
+message FilterUpvote {
+  string type = 1;
+}
+
+message Upvotes {
+  repeated Upvote upvotes = 1;
+}
+
 message UpvoteId {
   string upvoteId = 1;
 }
@@ -27,6 +35,9 @@ message EmptyUpvote {
 
 service UpvoteService {
   rpc Create (NewUpvote) returns (Upvote) {}
+  rpc Read (FilterUpvote) returns (Upvotes) {}
+  rpc ReadById (UpvoteId) returns (Upvote) {}
+  rpc Update (Upvote) returns (EmptyUpvote) {}
   rpc Delete (UpvoteId) returns (EmptyUpvote) {}
 }
 
