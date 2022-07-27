@@ -13,4 +13,10 @@ var serviceRoutes = []Routes{
 		Function:       service_controller.Create,
 		Authentication: false,
 	},
+	{
+		Endpoint:       "/services",
+		Method:         http.MethodGet,
+		Function:       service_controller.Read,
+		Authentication: false,
+	},
 }
