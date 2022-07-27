@@ -117,15 +117,27 @@ func (s UpvoteServer) ReadById(ctx context.Context, in *pb.UpvoteId) (*pb.Upvote
 
 	filter := bson.M{"_id": upvoteId}
 
-	var result *pb.Upvote
+	type DecodedUpvote struct {
+		ObjectID  primitive.ObjectID `bson:"_id"`
+		ServiceID string             `bson:"service_id"`
+		UserID    string             `bson:"user_id"`
+		Vote      string
+		Comment   string
+	}
+	var decodedUpvote DecodedUpvote
 
-	err = upvoteCollection.FindOne(context.TODO(), filter).Decode(&result)
+	err = upvoteCollection.FindOne(context.TODO(), filter).Decode(&decodedUpvote)
 	if err != nil {
 		return &pb.Upvote{}, err
 	}
 
-	result.UserId = in.GetUpvoteId()
-	return result, nil
+	return &pb.Upvote{
+		UpvoteId:  in.GetUpvoteId(),
+		ServiceId: decodedUpvote.ServiceID,
+		UserId:    decodedUpvote.UserID,
+		Vote:      decodedUpvote.Vote,
+		Comment:   decodedUpvote.Comment,
+	}, nil
 }
 
 func (s UpvoteServer) Update(ctx context.Context, in *pb.Upvote) (*pb.EmptyUpvote, error) {
