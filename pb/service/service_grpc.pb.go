@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceServiceClient interface {
 	Create(ctx context.Context, in *NewService, opts ...grpc.CallOption) (*Service, error)
+	Read(ctx context.Context, in *FilterService, opts ...grpc.CallOption) (*Services, error)
 }
 
 type serviceServiceClient struct {
@@ -42,11 +43,21 @@ func (c *serviceServiceClient) Create(ctx context.Context, in *NewService, opts 
 	return out, nil
 }
 
+func (c *serviceServiceClient) Read(ctx context.Context, in *FilterService, opts ...grpc.CallOption) (*Services, error) {
+	out := new(Services)
+	err := c.cc.Invoke(ctx, "/ServiceService/Read", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ServiceServiceServer is the server API for ServiceService service.
 // All implementations must embed UnimplementedServiceServiceServer
 // for forward compatibility
 type ServiceServiceServer interface {
 	Create(context.Context, *NewService) (*Service, error)
+	Read(context.Context, *FilterService) (*Services, error)
 	mustEmbedUnimplementedServiceServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedServiceServiceServer struct {
 
 func (UnimplementedServiceServiceServer) Create(context.Context, *NewService) (*Service, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedServiceServiceServer) Read(context.Context, *FilterService) (*Services, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
 func (UnimplementedServiceServiceServer) mustEmbedUnimplementedServiceServiceServer() {}
 
@@ -88,6 +102,24 @@ func _ServiceService_Create_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ServiceService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FilterService)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServiceServer).Read(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ServiceService/Read",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServiceServer).Read(ctx, req.(*FilterService))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ServiceService_ServiceDesc is the grpc.ServiceDesc for ServiceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var ServiceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _ServiceService_Create_Handler,
+		},
+		{
+			MethodName: "Read",
+			Handler:    _ServiceService_Read_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
