@@ -52,7 +52,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func Read(w http.ResponseWriter, r *http.Request) {
-	typeUpvote := strings.ToLower(r.URL.Query().Get("userName"))
+	typeUpvote := strings.ToLower(r.URL.Query().Get("typeUpvote"))
 
 	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
