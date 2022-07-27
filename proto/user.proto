@@ -37,6 +37,7 @@ service UserService {
   rpc Read (Filter) returns (Users) {}
   rpc ReadById (UserId) returns (User) {}
   rpc Update (User) returns (Empty) {}
+  rpc Delete (UserId) returns (Empty) {}
 }
 
 // command to create pb:
