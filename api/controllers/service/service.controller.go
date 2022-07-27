@@ -11,6 +11,7 @@ import (
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/models"
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/responses"
 	pb "github.com/aaguero96/Klever-Desafio-Tecnico/pb/service"
+	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 )
 
@@ -68,4 +69,28 @@ func Read(w http.ResponseWriter, r *http.Request) {
 	})
 
 	responses.JSON(w, http.StatusCreated, response.Services)
+}
+
+func ReadById(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	serviceId := params["serviceId"]
+
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer conn.Close()
+
+	c := pb.NewServiceServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	response, err := c.ReadById(ctx, &pb.ServiceId{
+		ServiceId: serviceId,
+	})
+
+	responses.JSON(w, http.StatusCreated, response)
 }
