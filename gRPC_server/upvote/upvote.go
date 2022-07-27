@@ -10,6 +10,7 @@ import (
 	pb "github.com/aaguero96/Klever-Desafio-Tecnico/pb/upvote"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 )
 
@@ -49,6 +50,114 @@ func (s UpvoteServer) Create(ctx context.Context, in *pb.NewUpvote) (*pb.Upvote,
 		Vote:      in.GetVote(),
 		Comment:   in.GetComment(),
 	}, nil
+}
+
+func (s UpvoteServer) Read(ctx context.Context, in *pb.FilterUpvote) (*pb.Upvotes, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return &pb.Upvotes{}, err
+	}
+
+	upvoteCollection := db.Collection("upvotes")
+
+	filter := bson.D{{}}
+	filter = append(filter, bson.E{
+		Key: "vote",
+		Value: bson.M{
+			"$regex": primitive.Regex{Pattern: "^" + in.GetType() + ".*", Options: "i"},
+		},
+	})
+
+	cur, err := upvoteCollection.Find(context.TODO(), filter, options.Find())
+	if err != nil {
+		return &pb.Upvotes{}, err
+	}
+	defer cur.Close(context.TODO())
+
+	var result []*pb.Upvote
+
+	for cur.Next(context.TODO()) {
+		type DecodedUpvote struct {
+			ObjectID  primitive.ObjectID `bson:"_id"`
+			ServiceID string
+			UserId    string
+			Vote      string
+			Comment   string
+		}
+		var decodedUpvote DecodedUpvote
+
+		if err = cur.Decode(&decodedUpvote); err != nil {
+			return &pb.Upvotes{}, err
+		}
+		upvote := pb.Upvote{
+			UpvoteId:  decodedUpvote.ObjectID.Hex(),
+			ServiceId: decodedUpvote.ServiceID,
+			UserId:    decodedUpvote.ServiceID,
+			Vote:      decodedUpvote.Vote,
+			Comment:   decodedUpvote.Comment,
+		}
+		result = append(result, &upvote)
+	}
+
+	return &pb.Upvotes{Upvotes: result}, nil
+}
+
+func (s UpvoteServer) ReadById(ctx context.Context, in *pb.UpvoteId) (*pb.Upvote, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return &pb.Upvote{}, err
+	}
+
+	upvoteCollection := db.Collection("upvotes")
+
+	upvoteId, err := primitive.ObjectIDFromHex(in.GetUpvoteId())
+	if err != nil {
+		return &pb.Upvote{}, err
+	}
+
+	filter := bson.M{"_id": upvoteId}
+
+	var result *pb.Upvote
+
+	err = upvoteCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		return &pb.Upvote{}, err
+	}
+
+	result.UserId = in.GetUpvoteId()
+	return result, nil
+}
+
+func (s UpvoteServer) Update(ctx context.Context, in *pb.Upvote) (*pb.EmptyUpvote, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	userCollection := db.Collection("users")
+
+	newUpvote := bson.M{
+		"$set": bson.M{
+			"service_id": in.GetServiceId(),
+			"user_id":    in.GetUserId(),
+			"vote":       in.GetVote(),
+			"comment":    in.GetComment(),
+		},
+	}
+
+	userId, err := primitive.ObjectIDFromHex(in.GetUserId())
+	if err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	filter := bson.M{"_id": userId}
+
+	_, err = userCollection.UpdateOne(context.TODO(), filter, newUpvote)
+	if err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	return &pb.EmptyUpvote{}, nil
 }
 
 func (s UpvoteServer) Delete(ctx context.Context, in *pb.UpvoteId) (*pb.EmptyUpvote, error) {
