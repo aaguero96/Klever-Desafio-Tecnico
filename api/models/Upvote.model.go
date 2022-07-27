@@ -1,9 +1,9 @@
 package models
 
 type Upvote struct {
-	ID        string `bson:"_id,omitempty"`
-	ServiceID string `bson:"serviceId,omitempty"`
-	UserID    string `bson:"userId,omitempty"`
+	Id        string `bson:"_id,omitempty"`
+	ServiceId string `bson:"serviceId,omitempty"`
+	UserId    string `bson:"userId,omitempty"`
 	Vote      string `bson:"vote,omitempty"`
 	Comment   string `bson:"comment,omitempty"`
 }
