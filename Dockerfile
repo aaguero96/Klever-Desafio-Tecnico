@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY go.mod .
 
+RUN go get
+RUN go install
 RUN go mod tidy
 
 COPY . .
