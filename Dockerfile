@@ -8,4 +8,6 @@ RUN go mod tidy
 
 COPY . .
 
+EXPOSE 5000
+
 CMD ["go", "run", "api/main.go"]
