@@ -51,6 +51,29 @@ func (s UpvoteServer) Create(ctx context.Context, in *pb.NewUpvote) (*pb.Upvote,
 	}, nil
 }
 
+func (s UpvoteServer) Delete(ctx context.Context, in *pb.UpvoteId) (*pb.EmptyUpvote, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	upvoteCollection := db.Collection("upvotes")
+
+	userId, err := primitive.ObjectIDFromHex(in.GetUpvoteId())
+	if err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	filter := bson.M{"_id": userId}
+
+	_, err = upvoteCollection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	return &pb.EmptyUpvote{}, nil
+}
+
 func UpvoteService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterUpvoteServiceServer(s, &UpvoteServer{})
 	log.Printf("server listening at %v", lis.Addr())
