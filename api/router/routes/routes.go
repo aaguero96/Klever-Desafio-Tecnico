@@ -25,5 +25,14 @@ func AllRoutes(r *mux.Router) *mux.Router {
 		).Methods(route.Method)
 	}
 
+	routes = serviceRoutes
+
+	for _, route := range routes {
+		r.HandleFunc(
+			route.Endpoint,
+			route.Function,
+		).Methods(route.Method)
+	}
+
 	return r
 }
