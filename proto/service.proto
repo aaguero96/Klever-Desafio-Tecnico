@@ -25,10 +25,15 @@ message ServiceId {
   string serviceId = 1;
 }
 
+message EmptyService {
+  bool return = 1;
+}
+
 service ServiceService {
   rpc Create (NewService) returns (Service) {}
   rpc Read (FilterService) returns (Services) {}
   rpc ReadById (ServiceId) returns (Service) {}
+  rpc Update (Service) returns (EmptyService) {}
 }
 
 // command to create pb:
