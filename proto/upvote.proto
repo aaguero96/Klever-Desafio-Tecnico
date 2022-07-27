@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "/pb/upvote;pb_upvote";
+
+message NewUpvote {
+  string serviceId = 1;
+  string userId = 2;
+  string vote = 3;
+  string comment = 4;
+}
+
+message Upvote {
+  string upvoteId = 1;
+  string serviceId = 2;
+  string userId = 3;
+  string vote = 4;
+  string comment = 5;
+}
+
+service UpvoteService {
+  rpc Create (NewUpvote) returns (Upvote) {}
+}
+
+// command to create pb:
+// protoc --go_out=. --go-grpc_out=. proto/service.proto
