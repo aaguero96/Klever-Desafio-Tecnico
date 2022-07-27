@@ -124,6 +124,37 @@ func (s UserServer) ReadById(ctx context.Context, in *pb.UserId) (*pb.User, erro
 	return result, nil
 }
 
+func (s UserServer) Update(ctx context.Context, in *pb.User) (*pb.Empty, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return nil, err
+	}
+
+	userCollection := db.Collection("users")
+
+	newUser := bson.M{
+		"$set": bson.M{
+			"name":     in.GetName(),
+			"email":    in.GetEmail(),
+			"password": in.GetPassword(),
+		},
+	}
+
+	userId, err := primitive.ObjectIDFromHex(in.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{"_id": userId}
+
+	_, err = userCollection.UpdateOne(context.TODO(), filter, newUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
 func UserService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterUserServiceServer(s, &UserServer{})
 	log.Printf("server listening at %v", lis.Addr())
