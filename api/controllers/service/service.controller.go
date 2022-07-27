@@ -94,3 +94,41 @@ func ReadById(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusCreated, response)
 }
+
+func Update(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.Error(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var service models.Service
+	if err = json.Unmarshal(body, &service); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	params := mux.Vars(r)
+
+	serviceId := params["serviceId"]
+
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer conn.Close()
+
+	c := pb.NewServiceServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	_, err = c.Update(ctx, &pb.Service{
+		ServiceId: serviceId,
+		Name:      service.Name,
+		Site:      service.Site,
+	})
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
