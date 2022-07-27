@@ -24,14 +24,14 @@ func (s ServiceServer) Create(ctx context.Context, in *pb.NewService) (*pb.Servi
 		return &pb.Service{}, err
 	}
 
-	userCollection := db.Collection("services")
+	serviceCollection := db.Collection("services")
 
 	newService := bson.M{
 		"name": in.GetName(),
 		"site": in.GetSite(),
 	}
 
-	result, err := userCollection.InsertOne(context.TODO(), newService)
+	result, err := serviceCollection.InsertOne(context.TODO(), newService)
 	if err != nil {
 		return &pb.Service{}, err
 	}
@@ -54,7 +54,7 @@ func (s ServiceServer) Read(ctx context.Context, in *pb.FilterService) (*pb.Serv
 		return &pb.Services{}, err
 	}
 
-	userCollection := db.Collection("services")
+	serviceCollection := db.Collection("services")
 
 	filter := bson.D{{}}
 	filter = append(filter, bson.E{
@@ -64,7 +64,7 @@ func (s ServiceServer) Read(ctx context.Context, in *pb.FilterService) (*pb.Serv
 		},
 	})
 
-	cur, err := userCollection.Find(context.TODO(), filter, options.Find())
+	cur, err := serviceCollection.Find(context.TODO(), filter, options.Find())
 	if err != nil {
 		return &pb.Services{}, err
 	}
@@ -100,7 +100,7 @@ func (s ServiceServer) ReadById(ctx context.Context, in *pb.ServiceId) (*pb.Serv
 		return &pb.Service{}, err
 	}
 
-	userCollection := db.Collection("services")
+	serviceCollection := db.Collection("services")
 
 	userId, err := primitive.ObjectIDFromHex(in.GetServiceId())
 	if err != nil {
@@ -111,7 +111,7 @@ func (s ServiceServer) ReadById(ctx context.Context, in *pb.ServiceId) (*pb.Serv
 
 	var result *pb.Service
 
-	err = userCollection.FindOne(context.TODO(), filter).Decode(&result)
+	err = serviceCollection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		return &pb.Service{}, err
 	}
@@ -126,7 +126,7 @@ func (s ServiceServer) Update(ctx context.Context, in *pb.Service) (*pb.EmptySer
 		return nil, err
 	}
 
-	userCollection := db.Collection("services")
+	serviceCollection := db.Collection("services")
 
 	newUser := bson.M{
 		"$set": bson.M{
@@ -142,7 +142,7 @@ func (s ServiceServer) Update(ctx context.Context, in *pb.Service) (*pb.EmptySer
 
 	filter := bson.M{"_id": userId}
 
-	_, err = userCollection.UpdateOne(context.TODO(), filter, newUser)
+	_, err = serviceCollection.UpdateOne(context.TODO(), filter, newUser)
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +156,7 @@ func (s ServiceServer) Delete(ctx context.Context, in *pb.ServiceId) (*pb.EmptyS
 		return nil, err
 	}
 
-	userCollection := db.Collection("services")
+	serviceCollection := db.Collection("services")
 
 	serviceId, err := primitive.ObjectIDFromHex(in.GetServiceId())
 	if err != nil {
@@ -165,7 +165,7 @@ func (s ServiceServer) Delete(ctx context.Context, in *pb.ServiceId) (*pb.EmptyS
 
 	filter := bson.M{"_id": serviceId}
 
-	_, err = userCollection.DeleteOne(context.TODO(), filter)
+	_, err = serviceCollection.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		return nil, err
 	}
