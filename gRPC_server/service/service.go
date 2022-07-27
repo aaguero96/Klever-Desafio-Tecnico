@@ -120,6 +120,36 @@ func (s ServiceServer) ReadById(ctx context.Context, in *pb.ServiceId) (*pb.Serv
 	return result, nil
 }
 
+func (s ServiceServer) Update(ctx context.Context, in *pb.Service) (*pb.EmptyService, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return nil, err
+	}
+
+	userCollection := db.Collection("services")
+
+	newUser := bson.M{
+		"$set": bson.M{
+			"name": in.GetName(),
+			"site": in.GetSite(),
+		},
+	}
+
+	userId, err := primitive.ObjectIDFromHex(in.GetServiceId())
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{"_id": userId}
+
+	_, err = userCollection.UpdateOne(context.TODO(), filter, newUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
 func ServiceService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterServiceServiceServer(s, &ServiceServer{})
 	log.Printf("server listening at %v", lis.Addr())
