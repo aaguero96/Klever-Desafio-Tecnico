@@ -22,4 +22,4 @@ service UpvoteService {
 }
 
 // command to create pb:
-// protoc --go_out=. --go-grpc_out=. proto/service.proto
+// protoc --go_out=. --go-grpc_out=. proto/upvote.proto
