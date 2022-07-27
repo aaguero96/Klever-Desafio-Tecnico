@@ -26,6 +26,7 @@ type ServiceServiceClient interface {
 	Read(ctx context.Context, in *FilterService, opts ...grpc.CallOption) (*Services, error)
 	ReadById(ctx context.Context, in *ServiceId, opts ...grpc.CallOption) (*Service, error)
 	Update(ctx context.Context, in *Service, opts ...grpc.CallOption) (*EmptyService, error)
+	Delete(ctx context.Context, in *ServiceId, opts ...grpc.CallOption) (*EmptyService, error)
 }
 
 type serviceServiceClient struct {
@@ -72,6 +73,15 @@ func (c *serviceServiceClient) Update(ctx context.Context, in *Service, opts ...
 	return out, nil
 }
 
+func (c *serviceServiceClient) Delete(ctx context.Context, in *ServiceId, opts ...grpc.CallOption) (*EmptyService, error) {
+	out := new(EmptyService)
+	err := c.cc.Invoke(ctx, "/ServiceService/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ServiceServiceServer is the server API for ServiceService service.
 // All implementations must embed UnimplementedServiceServiceServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type ServiceServiceServer interface {
 	Read(context.Context, *FilterService) (*Services, error)
 	ReadById(context.Context, *ServiceId) (*Service, error)
 	Update(context.Context, *Service) (*EmptyService, error)
+	Delete(context.Context, *ServiceId) (*EmptyService, error)
 	mustEmbedUnimplementedServiceServiceServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedServiceServiceServer) ReadById(context.Context, *ServiceId) (
 }
 func (UnimplementedServiceServiceServer) Update(context.Context, *Service) (*EmptyService, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedServiceServiceServer) Delete(context.Context, *ServiceId) (*EmptyService, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedServiceServiceServer) mustEmbedUnimplementedServiceServiceServer() {}
 
@@ -184,6 +198,24 @@ func _ServiceService_Update_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ServiceService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ServiceService/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServiceServer).Delete(ctx, req.(*ServiceId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ServiceService_ServiceDesc is the grpc.ServiceDesc for ServiceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var ServiceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Update",
 			Handler:    _ServiceService_Update_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _ServiceService_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
