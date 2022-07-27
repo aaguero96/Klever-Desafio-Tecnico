@@ -31,4 +31,10 @@ var userRoutes = []Routes{
 		Function:       user_controller.Update,
 		Authentication: false,
 	},
+	{
+		Endpoint:       "/users/{userId}",
+		Method:         http.MethodDelete,
+		Function:       user_controller.Delete,
+		Authentication: false,
+	},
 }
