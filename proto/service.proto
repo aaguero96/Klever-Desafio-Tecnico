@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "/pb/service;pb_service";
+
+message NewService {
+  string name = 1;
+  string site = 2;
+}
+
+message Service {
+  string serviceId = 1;
+  string name = 2;
+  string site = 3;
+}
+
+service ServiceService {
+  rpc Create (NewService) returns (Service) {}
+}
+
+// command to create pb:
+// protoc --go_out=. --go-grpc_out=. proto/service.proto
