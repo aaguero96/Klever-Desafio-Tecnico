@@ -3,11 +3,14 @@ package upvote_server
 import (
 	"context"
 	"errors"
+	"log"
+	"net"
 
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/database"
 	pb "github.com/aaguero96/Klever-Desafio-Tecnico/pb/upvote"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"google.golang.org/grpc"
 )
 
 type UpvoteServer struct {
@@ -46,4 +49,9 @@ func (s UpvoteServer) Create(ctx context.Context, in *pb.NewUpvote) (*pb.Upvote,
 		Vote:      in.GetVote(),
 		Comment:   in.GetComment(),
 	}, nil
+}
+
+func UpvoteService(s grpc.ServiceRegistrar, lis net.Listener) {
+	pb.RegisterUpvoteServiceServer(s, &UpvoteServer{})
+	log.Printf("server listening at %v", lis.Addr())
 }

@@ -5,6 +5,7 @@ import (
 	"net"
 
 	service_server "github.com/aaguero96/Klever-Desafio-Tecnico/gRPC_server/service"
+	upvote_server "github.com/aaguero96/Klever-Desafio-Tecnico/gRPC_server/upvote"
 	user_server "github.com/aaguero96/Klever-Desafio-Tecnico/gRPC_server/user"
 	"google.golang.org/grpc"
 )
@@ -16,8 +17,10 @@ func main() {
 	}
 
 	s := grpc.NewServer()
+
 	user_server.UserService(s, lis)
 	service_server.ServiceService(s, lis)
+	upvote_server.UpvoteService(s, lis)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatal(err)
