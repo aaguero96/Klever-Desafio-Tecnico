@@ -34,6 +34,7 @@ service ServiceService {
   rpc Read (FilterService) returns (Services) {}
   rpc ReadById (ServiceId) returns (Service) {}
   rpc Update (Service) returns (EmptyService) {}
+  rpc Delete (ServiceId) returns (EmptyService) {}
 }
 
 // command to create pb:
