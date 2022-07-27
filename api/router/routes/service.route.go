@@ -31,4 +31,10 @@ var serviceRoutes = []Routes{
 		Function:       service_controller.Update,
 		Authentication: false,
 	},
+	{
+		Endpoint:       "/services/{serviceId}",
+		Method:         http.MethodDelete,
+		Function:       service_controller.Delete,
+		Authentication: false,
+	},
 }
