@@ -25,4 +25,10 @@ var serviceRoutes = []Routes{
 		Function:       service_controller.ReadById,
 		Authentication: false,
 	},
+	{
+		Endpoint:       "/services/{serviceId}",
+		Method:         http.MethodPut,
+		Function:       service_controller.Update,
+		Authentication: false,
+	},
 }
