@@ -41,13 +41,13 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	response, err := c.Create(ctx, &pb.NewUpvote{
-		ServiceId: upvote.ServiceID,
-		UserId:    upvote.UserID,
+		ServiceId: upvote.ServiceId,
+		UserId:    upvote.UserId,
 		Vote:      upvote.Vote,
 		Comment:   upvote.Comment,
 	})
 
-	upvote.ID = response.UpvoteId
+	upvote.Id = response.UpvoteId
 	responses.JSON(w, http.StatusCreated, upvote)
 }
 
@@ -128,7 +128,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	_, err = c.Update(ctx, &pb.Upvote{
 		UpvoteId:  upvoteId,
-		ServiceId: upvote.ServiceID,
+		ServiceId: upvote.ServiceId,
 	})
 
 	responses.JSON(w, http.StatusNoContent, nil)
