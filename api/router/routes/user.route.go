@@ -25,4 +25,10 @@ var userRoutes = []Routes{
 		Function:       user_controller.ReadById,
 		Authentication: false,
 	},
+	{
+		Endpoint:       "/users/{userId}",
+		Method:         http.MethodPut,
+		Function:       user_controller.Update,
+		Authentication: false,
+	},
 }
