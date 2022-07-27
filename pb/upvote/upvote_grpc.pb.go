@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UpvoteServiceClient interface {
 	Create(ctx context.Context, in *NewUpvote, opts ...grpc.CallOption) (*Upvote, error)
+	Read(ctx context.Context, in *FilterUpvote, opts ...grpc.CallOption) (*Upvotes, error)
+	ReadById(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*Upvote, error)
+	Update(ctx context.Context, in *Upvote, opts ...grpc.CallOption) (*EmptyUpvote, error)
 	Delete(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*EmptyUpvote, error)
 }
 
@@ -43,6 +46,33 @@ func (c *upvoteServiceClient) Create(ctx context.Context, in *NewUpvote, opts ..
 	return out, nil
 }
 
+func (c *upvoteServiceClient) Read(ctx context.Context, in *FilterUpvote, opts ...grpc.CallOption) (*Upvotes, error) {
+	out := new(Upvotes)
+	err := c.cc.Invoke(ctx, "/UpvoteService/Read", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *upvoteServiceClient) ReadById(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*Upvote, error) {
+	out := new(Upvote)
+	err := c.cc.Invoke(ctx, "/UpvoteService/ReadById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *upvoteServiceClient) Update(ctx context.Context, in *Upvote, opts ...grpc.CallOption) (*EmptyUpvote, error) {
+	out := new(EmptyUpvote)
+	err := c.cc.Invoke(ctx, "/UpvoteService/Update", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *upvoteServiceClient) Delete(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*EmptyUpvote, error) {
 	out := new(EmptyUpvote)
 	err := c.cc.Invoke(ctx, "/UpvoteService/Delete", in, out, opts...)
@@ -57,6 +87,9 @@ func (c *upvoteServiceClient) Delete(ctx context.Context, in *UpvoteId, opts ...
 // for forward compatibility
 type UpvoteServiceServer interface {
 	Create(context.Context, *NewUpvote) (*Upvote, error)
+	Read(context.Context, *FilterUpvote) (*Upvotes, error)
+	ReadById(context.Context, *UpvoteId) (*Upvote, error)
+	Update(context.Context, *Upvote) (*EmptyUpvote, error)
 	Delete(context.Context, *UpvoteId) (*EmptyUpvote, error)
 	mustEmbedUnimplementedUpvoteServiceServer()
 }
@@ -67,6 +100,15 @@ type UnimplementedUpvoteServiceServer struct {
 
 func (UnimplementedUpvoteServiceServer) Create(context.Context, *NewUpvote) (*Upvote, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedUpvoteServiceServer) Read(context.Context, *FilterUpvote) (*Upvotes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
+}
+func (UnimplementedUpvoteServiceServer) ReadById(context.Context, *UpvoteId) (*Upvote, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadById not implemented")
+}
+func (UnimplementedUpvoteServiceServer) Update(context.Context, *Upvote) (*EmptyUpvote, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedUpvoteServiceServer) Delete(context.Context, *UpvoteId) (*EmptyUpvote, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
@@ -102,6 +144,60 @@ func _UpvoteService_Create_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UpvoteService_Read_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FilterUpvote)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UpvoteServiceServer).Read(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/UpvoteService/Read",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UpvoteServiceServer).Read(ctx, req.(*FilterUpvote))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UpvoteService_ReadById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpvoteId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UpvoteServiceServer).ReadById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/UpvoteService/ReadById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UpvoteServiceServer).ReadById(ctx, req.(*UpvoteId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UpvoteService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Upvote)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UpvoteServiceServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/UpvoteService/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UpvoteServiceServer).Update(ctx, req.(*Upvote))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UpvoteService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpvoteId)
 	if err := dec(in); err != nil {
@@ -130,6 +226,18 @@ var UpvoteService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _UpvoteService_Create_Handler,
+		},
+		{
+			MethodName: "Read",
+			Handler:    _UpvoteService_Read_Handler,
+		},
+		{
+			MethodName: "ReadById",
+			Handler:    _UpvoteService_ReadById_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _UpvoteService_Update_Handler,
 		},
 		{
 			MethodName: "Delete",
