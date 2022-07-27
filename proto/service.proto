@@ -13,8 +13,17 @@ message Service {
   string site = 3;
 }
 
+message FilterService {
+  string name = 1;
+}
+
+message Services {
+  repeated Service services = 1;
+}
+
 service ServiceService {
   rpc Create (NewService) returns (Service) {}
+  rpc Read (FilterService) returns (Services) {}
 }
 
 // command to create pb:
