@@ -123,7 +123,7 @@ func (s ServiceServer) ReadById(ctx context.Context, in *pb.ServiceId) (*pb.Serv
 func (s ServiceServer) Update(ctx context.Context, in *pb.Service) (*pb.EmptyService, error) {
 	db, err := database.Connect()
 	if err != nil {
-		return nil, err
+		return &pb.EmptyService{}, err
 	}
 
 	serviceCollection := db.Collection("services")
@@ -137,30 +137,30 @@ func (s ServiceServer) Update(ctx context.Context, in *pb.Service) (*pb.EmptySer
 
 	userId, err := primitive.ObjectIDFromHex(in.GetServiceId())
 	if err != nil {
-		return nil, err
+		return &pb.EmptyService{}, err
 	}
 
 	filter := bson.M{"_id": userId}
 
 	_, err = serviceCollection.UpdateOne(context.TODO(), filter, newUser)
 	if err != nil {
-		return nil, err
+		return &pb.EmptyService{}, err
 	}
 
-	return nil, nil
+	return &pb.EmptyService{}, nil
 }
 
 func (s ServiceServer) Delete(ctx context.Context, in *pb.ServiceId) (*pb.EmptyService, error) {
 	db, err := database.Connect()
 	if err != nil {
-		return nil, err
+		return &pb.EmptyService{}, err
 	}
 
 	serviceCollection := db.Collection("services")
 
 	serviceId, err := primitive.ObjectIDFromHex(in.GetServiceId())
 	if err != nil {
-		return nil, err
+		return &pb.EmptyService{}, err
 	}
 
 	filter := bson.M{"_id": serviceId}
@@ -170,7 +170,7 @@ func (s ServiceServer) Delete(ctx context.Context, in *pb.ServiceId) (*pb.EmptyS
 		return nil, err
 	}
 
-	return nil, nil
+	return &pb.EmptyService{}, nil
 }
 
 func ServiceService(s grpc.ServiceRegistrar, lis net.Listener) {
