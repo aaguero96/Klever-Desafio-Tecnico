@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ServiceServiceClient interface {
 	Create(ctx context.Context, in *NewService, opts ...grpc.CallOption) (*Service, error)
 	Read(ctx context.Context, in *FilterService, opts ...grpc.CallOption) (*Services, error)
+	ReadById(ctx context.Context, in *ServiceId, opts ...grpc.CallOption) (*Service, error)
 }
 
 type serviceServiceClient struct {
@@ -52,12 +53,22 @@ func (c *serviceServiceClient) Read(ctx context.Context, in *FilterService, opts
 	return out, nil
 }
 
+func (c *serviceServiceClient) ReadById(ctx context.Context, in *ServiceId, opts ...grpc.CallOption) (*Service, error) {
+	out := new(Service)
+	err := c.cc.Invoke(ctx, "/ServiceService/ReadById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ServiceServiceServer is the server API for ServiceService service.
 // All implementations must embed UnimplementedServiceServiceServer
 // for forward compatibility
 type ServiceServiceServer interface {
 	Create(context.Context, *NewService) (*Service, error)
 	Read(context.Context, *FilterService) (*Services, error)
+	ReadById(context.Context, *ServiceId) (*Service, error)
 	mustEmbedUnimplementedServiceServiceServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedServiceServiceServer) Create(context.Context, *NewService) (*
 }
 func (UnimplementedServiceServiceServer) Read(context.Context, *FilterService) (*Services, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Read not implemented")
+}
+func (UnimplementedServiceServiceServer) ReadById(context.Context, *ServiceId) (*Service, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadById not implemented")
 }
 func (UnimplementedServiceServiceServer) mustEmbedUnimplementedServiceServiceServer() {}
 
@@ -120,6 +134,24 @@ func _ServiceService_Read_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ServiceService_ReadById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServiceServer).ReadById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ServiceService/ReadById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServiceServer).ReadById(ctx, req.(*ServiceId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ServiceService_ServiceDesc is the grpc.ServiceDesc for ServiceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var ServiceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Read",
 			Handler:    _ServiceService_Read_Handler,
+		},
+		{
+			MethodName: "ReadById",
+			Handler:    _ServiceService_ReadById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
