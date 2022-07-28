@@ -137,6 +137,18 @@ func (s UserServer) ReadById(ctx context.Context, in *pb.UserId) (*pb.User, erro
 }
 
 func (s UserServer) Update(ctx context.Context, in *pb.User) (*pb.Empty, error) {
+	if err := validateName(in.GetName()); err != nil {
+		return &pb.Empty{}, err
+	}
+
+	if err := validateEmail(in.GetEmail()); err != nil {
+		return &pb.Empty{}, err
+	}
+
+	if err := validatePassword(in.GetPassword()); err != nil {
+		return &pb.Empty{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		return &pb.Empty{}, err
