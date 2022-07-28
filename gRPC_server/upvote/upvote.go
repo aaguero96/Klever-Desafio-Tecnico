@@ -153,8 +153,20 @@ func (s UpvoteServer) ReadById(ctx context.Context, in *pb.UpvoteId) (*pb.Upvote
 }
 
 func (s UpvoteServer) Update(ctx context.Context, in *pb.Upvote) (*pb.EmptyUpvote, error) {
+	if err := validateVote(in.GetVote()); err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	if err := validateId(db, in.GetServiceId(), "services"); err != nil {
+		return &pb.EmptyUpvote{}, err
+	}
+
+	if err := validateId(db, in.GetUserId(), "users"); err != nil {
 		return &pb.EmptyUpvote{}, err
 	}
 
