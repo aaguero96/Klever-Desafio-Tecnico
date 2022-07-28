@@ -74,7 +74,7 @@ func (s UserServer) Read(ctx context.Context, in *pb.Filter) (*pb.Users, error) 
 	filter = append(filter, bson.E{
 		Key: "name",
 		Value: bson.M{
-			"$regex": primitive.Regex{Pattern: "^" + in.GetName() + ".*", Options: "i"},
+			"$regex": primitive.Regex{Pattern: in.GetName(), Options: "i"},
 		},
 	})
 
