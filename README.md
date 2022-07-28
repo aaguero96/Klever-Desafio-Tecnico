@@ -46,4 +46,4 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
 # # # For gRPC requests
 
 1. Create API in postman
-<img src="./images/gRPC_1.png" height="50">
+<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_1.png?raw=true" height="50">
