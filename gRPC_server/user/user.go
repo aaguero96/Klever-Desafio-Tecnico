@@ -3,7 +3,6 @@ package user_server
 import (
 	"context"
 	"errors"
-	"log"
 	"net"
 
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/database"
@@ -204,5 +203,4 @@ func (s UserServer) Delete(ctx context.Context, in *pb.UserId) (*pb.Empty, error
 
 func UserService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterUserServiceServer(s, &UserServer{})
-	log.Printf("server listening at %v", lis.Addr())
 }
