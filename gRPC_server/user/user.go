@@ -23,6 +23,10 @@ func (s UserServer) Create(ctx context.Context, in *pb.NewUser) (*pb.User, error
 		return &pb.User{}, err
 	}
 
+	if err := validateEmail(in.GetEmail()); err != nil {
+		return &pb.User{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		return &pb.User{}, err
