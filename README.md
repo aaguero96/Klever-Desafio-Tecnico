@@ -162,3 +162,97 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
         ```javascript
         {}
         ```
+
+  - For ServiceService:
+    - Create
+      - Describe:
+        - input message needs two fields: name as string and site as string.
+        - output message has three fields: serviceId as string, name as string and site as string.
+      - Input:
+      ```javascript
+      {
+        "name": "klever",
+        "site": "https://klever.io/"
+      }
+      ```
+      - Output:
+      ```javascript
+      {
+        "serviceId": "62e29e07b8caab0ad7c8db1d",
+        "name": "klever",
+        "site": "https://klever.io/"
+      }
+      ```
+      
+    - Read
+      - Describe:
+        - input message could have one field: name as string.
+        - output message has field services as array which has element with fields serviceId as string, name as string and site as string. If input has name field, name will be filter (case non sensitive).
+      - Input:
+      ```javascript
+      {
+        "name": "klever"
+      }
+      ```
+      - Output:
+      ```javascript
+      {
+        "services": [
+            {
+                "serviceId": "62e29e07b8caab0ad7c8db1d",
+                "name": "klever",
+                "site": "https://klever.io/"
+            }
+        ]
+      }
+      ```
+    
+    - ReadById
+      - Describe:
+        - input message needs one field: serviceId as string.
+        - output message has three fields: serviceId as string, name as string and site as string.
+      - Input:
+      ```javascript
+      {
+        "serviceId": "62e29e07b8caab0ad7c8db1d"
+      }
+      ```
+      - Output:
+      ```javascript
+      {
+        "serviceId": "62e29e07b8caab0ad7c8db1d",
+        "name": "klever",
+        "site": "https://klever.io/"
+      }
+      ```
+
+    - Update
+      - Describe:
+        - input message needs four fields: serviceId as string, name as string and site as string.
+        - output message doesnt has fields.
+      - Input:
+        ```javascript
+        {
+          "serviceId": "62e29e07b8caab0ad7c8db1d",
+          "name": "Klever",
+          "site": "https://klever.io/"
+        }
+        ```
+        - Output:
+        ```javascript
+        {}
+        ```
+    - Delete
+      - Describe:
+        - input message needs one field: serviceId as string.
+        - output message doesnt has fields.
+      - Input:
+        ```javascript
+        {
+          "serviceId": "62e29e07b8caab0ad7c8db1d"
+        }
+        ```
+        - Output:
+        ```javascript
+        {}
+        ```
