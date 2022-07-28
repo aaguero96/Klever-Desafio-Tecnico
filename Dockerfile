@@ -10,4 +10,4 @@ COPY . .
 
 RUN go build gRPC_server/main.go
 
-CMD ["go", "run", "./gRPC_server"]
+CMD ["./main"]
