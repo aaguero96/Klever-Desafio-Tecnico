@@ -3,7 +3,6 @@ package upvote_server
 import (
 	"context"
 	"errors"
-	"log"
 	"net"
 
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/database"
@@ -221,5 +220,4 @@ func (s UpvoteServer) Delete(ctx context.Context, in *pb.UpvoteId) (*pb.EmptyUpv
 
 func UpvoteService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterUpvoteServiceServer(s, &UpvoteServer{})
-	log.Printf("server listening at %v", lis.Addr())
 }
