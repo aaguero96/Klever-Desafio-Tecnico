@@ -19,6 +19,10 @@ type UserServer struct {
 }
 
 func (s UserServer) Create(ctx context.Context, in *pb.NewUser) (*pb.User, error) {
+	if err := validateName(in.GetName()); err != nil {
+		return &pb.User{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		return &pb.User{}, err
