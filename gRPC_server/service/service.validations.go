@@ -28,12 +28,12 @@ func validateSite(site string) error {
 
 	if response.Scheme == "" {
 		log.Println("Site is invalid")
-		return err
+		return errors.New("Site is invalid")
 	}
 
 	if response.Host == "" {
 		log.Println("Site is invalid")
-		return err
+		return errors.New("Site is invalid")
 	}
 
 	return nil
