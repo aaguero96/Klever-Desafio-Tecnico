@@ -24,19 +24,22 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
 <h2>Run application (local)</h2>
 
 1. clone git reposiory
-- `git@github.com:aaguero96/Klever-Desafio-Tecnico.git` for SSH or `https://github.com/aaguero96/Klever-Desafio-Tecnico.git` for HTTPS.
+- `git clone git@github.com:aaguero96/Klever-Desafio-Tecnico.git` for SSH or `git clone https://github.com/aaguero96/Klever-Desafio-Tecnico.git` for HTTPS.
 
-2. Docker run mongoDB
+2. Enter inside repository
+- `cd Klever-Desafio-Tecnico`
+
+3. Docker run mongoDB
 - `docker run -d --name=mongo -p 27017:27017 bitnami/mongodb`, this step could be skipped if you have mongoDB runing on port 27017.
 
-3. Install requirements
+4. Install requirements
 - `go mod tidy`.
 
-4. Run gRPC service
+5. Run gRPC service
 - `go run gRPC_server/main.go`
 - In this item you have permissions to do requests to localhost:50052 with gRPC API.
 
-5. Run API service
+6. Run API service
 - `go run api/main.go`
 - In this item you have permissions to do requests to localhost:5000 with protocol http as client of gRPC server.
 - This item is an extra for applicatio, because test requirements need only gRPC API.
