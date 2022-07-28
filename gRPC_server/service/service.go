@@ -129,6 +129,14 @@ func (s ServiceServer) ReadById(ctx context.Context, in *pb.ServiceId) (*pb.Serv
 }
 
 func (s ServiceServer) Update(ctx context.Context, in *pb.Service) (*pb.EmptyService, error) {
+	if err := validateName(in.GetName()); err != nil {
+		return &pb.EmptyService{}, err
+	}
+
+	if err := validateSite(in.GetSite()); err != nil {
+		return &pb.EmptyService{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		return &pb.EmptyService{}, err
