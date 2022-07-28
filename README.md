@@ -66,6 +66,9 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
 
   - For `UserService`:
     - `Create`
+      - Describe:
+        - input message needs three fields: name as string, email as string and password as string.
+        - output message needs three fields: userId as string, name as string, email as string and password as string.
       - Input:
       ```javascript
       {
@@ -81,5 +84,29 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
         "name": "André Aguero",
         "email": "andre@email.com",
         "password": "123456"
+      }
+      ```
+      
+    - `Read`
+      - Describe:
+        - input message could have one fields: name as string.
+        - output has field users as array which has element with fields userId as string, name as string, email as string and password as string. If input has name field, name will be filter (case non sensitive).
+      - Input:
+      ```javascript
+      {
+          "name": "Andre"
+      }
+      ```
+      - Output:
+      ```javascript
+      {
+        "users": [
+          {
+            "userId": "62e26ffbb8caab0ad7c8db0a",
+            "name": "André Aguero",
+            "email": "andre@email.com",
+            "password": "123456"
+          }
+        ]
       }
       ```
