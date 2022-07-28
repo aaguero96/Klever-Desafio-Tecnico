@@ -23,6 +23,10 @@ func (s ServiceServer) Create(ctx context.Context, in *pb.NewService) (*pb.Servi
 		return &pb.Service{}, err
 	}
 
+	if err := validateSite(in.GetSite()); err != nil {
+		return &pb.Service{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		return &pb.Service{}, err
