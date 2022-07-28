@@ -8,6 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+var dataBaseName string = "klever"
+
 func Connect() (*mongo.Database, error) {
 	client, err := mongo.Connect(
 		context.TODO(),
@@ -21,7 +23,7 @@ func Connect() (*mongo.Database, error) {
 		return nil, err
 	}
 
-	db := client.Database("klever")
+	db := client.Database(dataBaseName)
 
 	return db, err
 }
