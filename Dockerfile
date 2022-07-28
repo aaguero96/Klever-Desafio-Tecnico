@@ -1,15 +1,11 @@
 FROM golang:1.18-alpine
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY go.mod .
+COPY go.mod go.sum ./
 
-RUN go get
-RUN go install
-RUN go mod tidy
+RUN go mod download && go mod verify
 
 COPY . .
 
-EXPOSE 5000
-
-CMD ["go", "run", "api/main.go"]
+CMD ["go", "run", "gRPC_server/main.go"]
