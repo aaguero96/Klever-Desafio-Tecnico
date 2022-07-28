@@ -8,4 +8,4 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-CMD ["go", "run", "gRPC_server/main.go"]
+RUN go build -v -o /usr/local/bin/app ./...
