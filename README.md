@@ -46,4 +46,36 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
 # # # For gRPC requests
 
 1. Create API in postman
-<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_1.png?raw=true" style="margin-left: auto;margin-right: auto; display: block;">
+1.1. In field `APIs`, click on button `New` on top of page:
+<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_1.png?raw=true"">
+1.2. Click on `gRPC request`:
+<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_2.png?raw=true"">
+1.3. In `Select method` click on `Import a .proto file`:
+<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_3.png?raw=true"">
+1.4. Select an proto file, in this repository have three proto files at `proto/*.proto`, you have to do this, and next itens in item 1., procedures three times to test all requests.
+1.5. Click on button `Next`:
+<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_4.png?raw=true"">
+1.6. Name API in fied `API name` and name Version in field `Version name`:
+<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_5.png?raw=true"">
+1.7. Click on `Import as API`.
+1.8. In field `Enter server URL` insert `localhost:50052`.
+1.9. Select field `message`:
+<img src="https://github.com/aaguero96/Klever-Desafio-Tecnico/blob/main/images/gPRC_6.png?raw=true"">
+
+2. Follow this methods:
+
+2.1. For `UserService`:
+2.1.1. `Create`
+- Input:
+  {
+    "name": "André Aguero",
+    "email": "andre@email.com",
+    "password": "123456"
+  }
+- Output:
+  {
+    "userId": "62e26ffbb8caab0ad7c8db0a",
+    "name": "André Aguero",
+    "email": "andre@email.com",
+    "password": "123456"
+  }
