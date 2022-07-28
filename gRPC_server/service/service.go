@@ -68,7 +68,7 @@ func (s ServiceServer) Read(ctx context.Context, in *pb.FilterService) (*pb.Serv
 	filter = append(filter, bson.E{
 		Key: "name",
 		Value: bson.M{
-			"$regex": primitive.Regex{Pattern: "^" + in.GetName() + ".*", Options: "i"},
+			"$regex": primitive.Regex{Pattern: in.GetName(), Options: "i"},
 		},
 	})
 
