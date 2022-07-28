@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: gRPC_server/main.go
+  web: go build -v -o /usr/local/bin/app ./...
