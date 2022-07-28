@@ -76,7 +76,7 @@ func (s UpvoteServer) Read(ctx context.Context, in *pb.FilterUpvote) (*pb.Upvote
 	filter = append(filter, bson.E{
 		Key: "vote",
 		Value: bson.M{
-			"$regex": primitive.Regex{Pattern: "^" + in.GetType() + ".*", Options: "i"},
+			"$regex": primitive.Regex{Pattern: in.GetType(), Options: "i"},
 		},
 	})
 
