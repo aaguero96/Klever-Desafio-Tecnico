@@ -19,8 +19,20 @@ type UpvoteServer struct {
 }
 
 func (s UpvoteServer) Create(ctx context.Context, in *pb.NewUpvote) (*pb.Upvote, error) {
+	if err := validateVote(in.GetVote()); err != nil {
+		return &pb.Upvote{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
+		return &pb.Upvote{}, err
+	}
+
+	if err := validateId(db, in.GetServiceId(), "services"); err != nil {
+		return &pb.Upvote{}, err
+	}
+
+	if err := validateId(db, in.GetUserId(), "users"); err != nil {
 		return &pb.Upvote{}, err
 	}
 
