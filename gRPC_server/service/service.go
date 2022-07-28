@@ -19,6 +19,10 @@ type ServiceServer struct {
 }
 
 func (s ServiceServer) Create(ctx context.Context, in *pb.NewService) (*pb.Service, error) {
+	if err := validateName(in.GetName()); err != nil {
+		return &pb.Service{}, err
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		return &pb.Service{}, err
