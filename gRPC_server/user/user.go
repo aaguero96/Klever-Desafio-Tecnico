@@ -37,10 +37,15 @@ func (s UserServer) Create(ctx context.Context, in *pb.NewUser) (*pb.User, error
 
 	userCollection := db.Collection("users")
 
+	password, err := hashPassword(in.GetPassword())
+	if err != nil {
+		return &pb.User{}, err
+	}
+
 	newUser := bson.M{
 		"name":     in.GetName(),
 		"email":    in.GetEmail(),
-		"password": in.GetPassword(),
+		"password": password,
 	}
 
 	result, err := userCollection.InsertOne(context.TODO(), newUser)
@@ -57,7 +62,7 @@ func (s UserServer) Create(ctx context.Context, in *pb.NewUser) (*pb.User, error
 		UserId:   oid.Hex(),
 		Name:     in.GetName(),
 		Email:    in.GetEmail(),
-		Password: in.GetPassword(),
+		Password: password,
 	}, nil
 }
 
@@ -155,11 +160,16 @@ func (s UserServer) Update(ctx context.Context, in *pb.User) (*pb.Empty, error) 
 
 	userCollection := db.Collection("users")
 
+	password, err := hashPassword(in.GetPassword())
+	if err != nil {
+		return &pb.Empty{}, err
+	}
+
 	newUser := bson.M{
 		"$set": bson.M{
 			"name":     in.GetName(),
 			"email":    in.GetEmail(),
-			"password": in.GetPassword(),
+			"password": password,
 		},
 	}
 
