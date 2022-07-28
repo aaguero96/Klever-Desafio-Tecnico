@@ -44,6 +44,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		Name: service.Name,
 		Site: service.Site,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	service.ID = response.ServiceId
 	responses.JSON(w, http.StatusCreated, service)
@@ -67,6 +71,10 @@ func Read(w http.ResponseWriter, r *http.Request) {
 	response, err := c.Read(ctx, &pb.FilterService{
 		Name: name,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusCreated, response.Services)
 }
@@ -91,6 +99,10 @@ func ReadById(w http.ResponseWriter, r *http.Request) {
 	response, err := c.ReadById(ctx, &pb.ServiceId{
 		ServiceId: serviceId,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusCreated, response)
 }
@@ -129,6 +141,10 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		Name:      service.Name,
 		Site:      service.Site,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
@@ -153,6 +169,10 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	_, err = c.Delete(ctx, &pb.ServiceId{
 		ServiceId: serviceId,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }

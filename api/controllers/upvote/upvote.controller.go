@@ -46,6 +46,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		Vote:      upvote.Vote,
 		Comment:   upvote.Comment,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	upvote.Id = response.UpvoteId
 	responses.JSON(w, http.StatusCreated, upvote)
@@ -69,6 +73,10 @@ func Read(w http.ResponseWriter, r *http.Request) {
 	response, err := c.Read(ctx, &pb.FilterUpvote{
 		Type: typeUpvote,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusCreated, response.Upvotes)
 }
@@ -93,6 +101,10 @@ func ReadById(w http.ResponseWriter, r *http.Request) {
 	response, err := c.ReadById(ctx, &pb.UpvoteId{
 		UpvoteId: upvoteId,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusCreated, response)
 }
@@ -130,6 +142,10 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		UpvoteId:  upvoteId,
 		ServiceId: upvote.ServiceId,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
@@ -154,6 +170,10 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	_, err = c.Delete(ctx, &pb.UpvoteId{
 		UpvoteId: upvoteId,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }

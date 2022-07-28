@@ -45,6 +45,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		Email:    user.Email,
 		Password: user.Password,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	user.ID = response.UserId
 	responses.JSON(w, http.StatusCreated, user)
@@ -68,6 +72,10 @@ func Read(w http.ResponseWriter, r *http.Request) {
 	response, err := c.Read(ctx, &pb.Filter{
 		Name: name,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusCreated, response.Users)
 }
@@ -92,6 +100,10 @@ func ReadById(w http.ResponseWriter, r *http.Request) {
 	response, err := c.ReadById(ctx, &pb.UserId{
 		UserId: userId,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusCreated, response)
 }
@@ -131,6 +143,10 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		Email:    user.Email,
 		Password: user.Password,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
@@ -155,6 +171,10 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	_, err = c.Delete(ctx, &pb.UserId{
 		UserId: userId,
 	})
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	responses.JSON(w, http.StatusNoContent, nil)
 }
