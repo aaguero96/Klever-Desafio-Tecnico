@@ -3,7 +3,6 @@ package service_server
 import (
 	"context"
 	"errors"
-	"log"
 	"net"
 
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/database"
@@ -191,5 +190,4 @@ func (s ServiceServer) Delete(ctx context.Context, in *pb.ServiceId) (*pb.EmptyS
 
 func ServiceService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterServiceServiceServer(s, &ServiceServer{})
-	log.Printf("server listening at %v", lis.Addr())
 }
