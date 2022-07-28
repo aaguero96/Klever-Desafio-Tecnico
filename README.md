@@ -256,3 +256,107 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
         ```javascript
         {}
         ```
+  
+  - For UpvoteService:
+    - Create
+      - Describe:
+        - input message needs four fields: serviceId as string, userId as string, vote as string and comment as string.
+        - output message has five fields: upvoteId as string, serviceId as string, userId as string, vote as string and comment as string.
+      - Input:
+      ```javascript
+      {
+        "serviceId": "62e29e07b8caab0ad7c8db1d",
+        "userId": "62e26ffbb8caab0ad7c8db0a",
+        "vote": "up",
+        "comment": "meu comentário"
+      }
+      ```
+      - Output:
+      ```javascript
+      {
+        "upvoteId": "62e2a0f2b8caab0ad7c8db24",
+        "serviceId": "62e29e07b8caab0ad7c8db1d",
+        "userId": "62e26ffbb8caab0ad7c8db0a",
+        "vote": "up",
+        "comment": "meu comentário"
+      }
+      ```
+      
+    - Read
+      - Describe:
+        - input message could have one field: type as string.
+        - output message has field upvotes as array which has element with fields upvoteId as string, serviceId as string, userId as string, vote as string and comment as string. If input has name field, name will be filter (case non sensitive).
+      - Input:
+      ```javascript
+      {
+        "type": "up"
+      }
+      ```
+      - Output:
+      ```javascript
+      {
+        "upvotes": [
+            {
+              "upvoteId": "62e2a0f2b8caab0ad7c8db24",
+              "serviceId": "62e29e07b8caab0ad7c8db1d",
+              "userId": "62e26ffbb8caab0ad7c8db0a",
+              "vote": "up",
+              "comment": "meu comentário"
+            }
+        ]
+      }
+      ```
+    
+    - ReadById
+      - Describe:
+        - input message needs one field: upvoteId as string.
+        - output message has five fields: upvoteId as string, serviceId as string, userId as string, vote as string and comment as string.
+      - Input:
+      ```javascript
+      {
+        "upvoteId": "62e145589c1072888a0b9c66"
+      }
+      ```
+      - Output:
+      ```javascript
+      {
+        "upvoteId": "62e145589c1072888a0b9c66",
+        "serviceId": "62e13aae7cdb0240a6120cb8",
+        "userId": "62e0159164ce105fd8991409",
+        "vote": "up",
+        "comment": "meu texto2 sobre esse serviço"
+      }
+      ```
+
+    - Update
+      - Describe:
+        - input message has five fields: upvoteId as string, serviceId as string, userId as string, vote as string and comment as string.
+        - output message doesnt has fields.
+      - Input:
+        ```javascript
+        {
+          "upvoteId": "62e2a0f2b8caab0ad7c8db24",
+          "serviceId": "62e29e07b8caab0ad7c8db1d",
+          "userId": "62e26ffbb8caab0ad7c8db0a",
+          "vote": "down",
+          "comment": "meu comentário"
+        }
+        ```
+        - Output:
+        ```javascript
+        {}
+        ```
+    - Delete
+      - Describe:
+        - input message needs one field: upvoteId as string.
+        - output message doesnt has fields.
+      - Input:
+        ```javascript
+        {
+          "upvoteId": "62e2a0f2b8caab0ad7c8db24"
+        }
+        ```
+        - Output:
+        ```javascript
+        {}
+        ```
