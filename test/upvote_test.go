@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/aaguero96/Klever-Desafio-Tecnico/api/database"
 	pbService "github.com/aaguero96/Klever-Desafio-Tecnico/pb/service"
@@ -30,7 +29,7 @@ func TestMethodCreateByUpvoteService(t *testing.T) {
 	c := pb.NewUpvoteServiceClient(conn)
 
 	// Add elements to user e server
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	cUser := pbUser.NewUserServiceClient(conn)
 	user, err := cUser.Create(ctx, &pbUser.NewUser{
 		Name:     "André Aguero",
@@ -49,7 +48,7 @@ func TestMethodCreateByUpvoteService(t *testing.T) {
 	cancel()
 
 	t.Run("When input is correct", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		input := &pb.NewUpvote{
 			ServiceId: idsToInput["service"],
 			UserId:    idsToInput["user"],
@@ -87,7 +86,7 @@ func TestMethodCreateByUpvoteService(t *testing.T) {
 			`Vote need to be "up" or "down"`,
 		}
 		for index, input := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Create(ctx, &input)
 			assert.Contains(t, err.Error(), outputs[index])
 			if err == nil {
@@ -124,7 +123,7 @@ func TestMethodCreateByUpvoteService(t *testing.T) {
 			"the provided hex string is not a valid ObjectID",
 		}
 		for index, input := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Create(ctx, &input)
 			assert.Contains(t, err.Error(), outputs[index])
 			if err == nil {
@@ -161,7 +160,7 @@ func TestMethodCreateByUpvoteService(t *testing.T) {
 			"the provided hex string is not a valid ObjectID",
 		}
 		for index, input := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Create(ctx, &input)
 			assert.Contains(t, err.Error(), outputs[index])
 			if err == nil {
@@ -172,7 +171,7 @@ func TestMethodCreateByUpvoteService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel = context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel = context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -194,7 +193,7 @@ func TestMethodReadByUpvoteService(t *testing.T) {
 	c := pb.NewUpvoteServiceClient(conn)
 
 	// Add elements to user e server
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	cUser := pbUser.NewUserServiceClient(conn)
 	user, err := cUser.Create(ctx, &pbUser.NewUser{
 		Name:     "André Aguero",
@@ -246,7 +245,7 @@ func TestMethodReadByUpvoteService(t *testing.T) {
 		},
 	}
 	for _, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		_, err := c.Create(ctx, &input)
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -255,7 +254,7 @@ func TestMethodReadByUpvoteService(t *testing.T) {
 	}
 
 	t.Run("When doesnt have input, return all services", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Read(ctx, &pb.FilterUpvote{})
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -270,7 +269,7 @@ func TestMethodReadByUpvoteService(t *testing.T) {
 	})
 
 	t.Run("When has input type=up, filter elements", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Read(ctx, &pb.FilterUpvote{Type: "up"})
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -280,7 +279,7 @@ func TestMethodReadByUpvoteService(t *testing.T) {
 	})
 
 	t.Run("When has input type=down, filter elements", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Read(ctx, &pb.FilterUpvote{Type: "down"})
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -290,7 +289,7 @@ func TestMethodReadByUpvoteService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel = context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel = context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -312,7 +311,7 @@ func TestMethodReadByIdByUpvoteService(t *testing.T) {
 	c := pb.NewUpvoteServiceClient(conn)
 
 	// Add elements to user e server
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	cUser := pbUser.NewUserServiceClient(conn)
 	user, err := cUser.Create(ctx, &pbUser.NewUser{
 		Name:     "André Aguero",
@@ -365,7 +364,7 @@ func TestMethodReadByIdByUpvoteService(t *testing.T) {
 	}
 	idInputs := make([]string, 5)
 	for index, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second*2)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Create(ctx, &input)
 		idInputs[index] = response.UpvoteId
 		if err != nil {
@@ -375,7 +374,7 @@ func TestMethodReadByIdByUpvoteService(t *testing.T) {
 	}
 
 	t.Run("When doesnt have input, return error", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second*2)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		_, err := c.ReadById(ctx, &pb.UpvoteId{})
 		if err == nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -386,7 +385,7 @@ func TestMethodReadByIdByUpvoteService(t *testing.T) {
 
 	t.Run("When have correct input, return element", func(t *testing.T) {
 		for index := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second*2)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.ReadById(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -400,7 +399,7 @@ func TestMethodReadByIdByUpvoteService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel = context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel = context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -422,7 +421,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 	c := pb.NewUpvoteServiceClient(conn)
 
 	// Add elements to user e server
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	cUser := pbUser.NewUserServiceClient(conn)
 	user, err := cUser.Create(ctx, &pbUser.NewUser{
 		Name:     "André Aguero",
@@ -475,7 +474,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 	}
 	idInputs := make([]string, 5)
 	for index, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Create(ctx, &input)
 		idInputs[index] = response.UpvoteId
 		if err != nil {
@@ -525,7 +524,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 
 		for _, newInput := range newInputs {
 			// Update element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.Update(ctx, &newInput)
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -535,7 +534,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 		}
 		for _, newInput := range newInputs {
 			// Verify element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.ReadById(ctx, &pb.UpvoteId{UpvoteId: newInput.UpvoteId})
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -564,7 +563,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 
 		for index, newInput := range newInputs {
 			// Update element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Update(ctx, &newInput)
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -605,7 +604,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 		}
 
 		for index, newInput := range newInputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Update(ctx, &newInput)
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -647,7 +646,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 
 		for index, newInput := range newInputs {
 			// Update element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Update(ctx, &newInput)
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -658,7 +657,7 @@ func TestUpdateByUpvoteService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel = context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel = context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -680,7 +679,7 @@ func TestMethodDeleteByUpvoteService(t *testing.T) {
 	c := pb.NewUpvoteServiceClient(conn)
 
 	// Add elements to user e server
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	cUser := pbUser.NewUserServiceClient(conn)
 	user, err := cUser.Create(ctx, &pbUser.NewUser{
 		Name:     "André Aguero",
@@ -733,7 +732,7 @@ func TestMethodDeleteByUpvoteService(t *testing.T) {
 	}
 	idInputs := make([]string, 5)
 	for index, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Create(ctx, &input)
 		idInputs[index] = response.UpvoteId
 		if err != nil {
@@ -743,7 +742,7 @@ func TestMethodDeleteByUpvoteService(t *testing.T) {
 	}
 
 	t.Run("When doesnt have input, return error", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		_, err := c.Delete(ctx, &pb.UpvoteId{})
 		if err == nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -755,7 +754,7 @@ func TestMethodDeleteByUpvoteService(t *testing.T) {
 	t.Run("When have correct input, return false", func(t *testing.T) {
 		// Delete elements
 		for index := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.Delete(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -765,7 +764,7 @@ func TestMethodDeleteByUpvoteService(t *testing.T) {
 		}
 		// Check if elements were deleted
 		for index := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.ReadById(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -776,7 +775,7 @@ func TestMethodDeleteByUpvoteService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel = context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel = context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }

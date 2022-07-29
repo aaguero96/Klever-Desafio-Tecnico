@@ -11,6 +11,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+var TIME_WAIT = time.Second * 3
+
 func TestMethodCreateByServiceService(t *testing.T) {
 	// Connect to database
 	db, err := database.Connect()
@@ -28,7 +30,7 @@ func TestMethodCreateByServiceService(t *testing.T) {
 	c := pb.NewServiceServiceClient(conn)
 
 	t.Run("When input is correct", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		input := &pb.NewService{
 			Name: "Klever",
 			Site: "https://klever.io/",
@@ -43,7 +45,7 @@ func TestMethodCreateByServiceService(t *testing.T) {
 	})
 
 	t.Run("When name input is incorrect", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		input := &pb.NewService{
 			Name: "",
 			Site: "https://klever.io/",
@@ -72,7 +74,7 @@ func TestMethodCreateByServiceService(t *testing.T) {
 			"Site is invalid",
 		}
 		for index, input := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Create(ctx, &input)
 			assert.Contains(t, err.Error(), outputs[index])
 			if err == nil {
@@ -83,7 +85,7 @@ func TestMethodCreateByServiceService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -120,7 +122,7 @@ func TestMethodReadByServiceService(t *testing.T) {
 		},
 	}
 	for _, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		_, err := c.Create(ctx, &input)
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -129,7 +131,7 @@ func TestMethodReadByServiceService(t *testing.T) {
 	}
 
 	t.Run("When doesnt have input, return all services", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Read(ctx, &pb.FilterService{})
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -142,7 +144,7 @@ func TestMethodReadByServiceService(t *testing.T) {
 	})
 
 	t.Run("When has input as first name, filter elements", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Read(ctx, &pb.FilterService{Name: "Klever"})
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -154,7 +156,7 @@ func TestMethodReadByServiceService(t *testing.T) {
 	})
 
 	t.Run("When has input as middle string, filter elements", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Read(ctx, &pb.FilterService{Name: "Le"})
 		if err != nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -168,7 +170,7 @@ func TestMethodReadByServiceService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -206,7 +208,7 @@ func TestMethodReadByIdByServiceService(t *testing.T) {
 	}
 	idInputs := make([]string, 3)
 	for index, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Create(ctx, &input)
 		idInputs[index] = response.ServiceId
 		if err != nil {
@@ -216,7 +218,7 @@ func TestMethodReadByIdByServiceService(t *testing.T) {
 	}
 
 	t.Run("When doesnt have input, return error", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		_, err := c.ReadById(ctx, &pb.ServiceId{})
 		if err == nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -227,7 +229,7 @@ func TestMethodReadByIdByServiceService(t *testing.T) {
 
 	t.Run("When have correct input, return element", func(t *testing.T) {
 		for index := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.ReadById(ctx, &pb.ServiceId{ServiceId: idInputs[index]})
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -239,7 +241,7 @@ func TestMethodReadByIdByServiceService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -277,7 +279,7 @@ func TestUpdateByServiceService(t *testing.T) {
 	}
 	idInputs := make([]string, 3)
 	for index, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Create(ctx, &input)
 		idInputs[index] = response.ServiceId
 		if err != nil {
@@ -307,7 +309,7 @@ func TestUpdateByServiceService(t *testing.T) {
 
 		for _, newInput := range newInputs {
 			// Update element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.Update(ctx, &newInput)
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -317,7 +319,7 @@ func TestUpdateByServiceService(t *testing.T) {
 		}
 		for _, newInput := range newInputs {
 			// Verify element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.ReadById(ctx, &pb.ServiceId{ServiceId: newInput.ServiceId})
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -342,7 +344,7 @@ func TestUpdateByServiceService(t *testing.T) {
 
 		for index, newInput := range newInputs {
 			// Update element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Update(ctx, &newInput)
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -371,7 +373,7 @@ func TestUpdateByServiceService(t *testing.T) {
 		}
 
 		for index, newInput := range newInputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Update(ctx, &newInput)
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -395,7 +397,7 @@ func TestUpdateByServiceService(t *testing.T) {
 
 		for index, newInput := range newInputs {
 			// Update element
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.Update(ctx, &newInput)
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -406,7 +408,7 @@ func TestUpdateByServiceService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
@@ -444,7 +446,7 @@ func TestMethodDeleteByServiceService(t *testing.T) {
 	}
 	idInputs := make([]string, 3)
 	for index, input := range inputs {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		response, err := c.Create(ctx, &input)
 		idInputs[index] = response.ServiceId
 		if err != nil {
@@ -454,7 +456,7 @@ func TestMethodDeleteByServiceService(t *testing.T) {
 	}
 
 	t.Run("When doesnt have input, return error", func(t *testing.T) {
-		ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 		_, err := c.Delete(ctx, &pb.ServiceId{})
 		if err == nil {
 			t.Errorf("Internal error, problem with normal input")
@@ -466,7 +468,7 @@ func TestMethodDeleteByServiceService(t *testing.T) {
 	t.Run("When have correct input, return false", func(t *testing.T) {
 		// Delete elements
 		for index := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			response, err := c.Delete(ctx, &pb.ServiceId{ServiceId: idInputs[index]})
 			if err != nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -476,7 +478,7 @@ func TestMethodDeleteByServiceService(t *testing.T) {
 		}
 		// Check if elements were deleted
 		for index := range inputs {
-			ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 			_, err := c.ReadById(ctx, &pb.ServiceId{ServiceId: idInputs[index]})
 			if err == nil {
 				t.Errorf("Internal error, problem with normal input")
@@ -487,7 +489,7 @@ func TestMethodDeleteByServiceService(t *testing.T) {
 	})
 
 	// Clear database
-	ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
 	defer cancel()
 	db.Drop(ctx)
 }
