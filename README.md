@@ -30,7 +30,7 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
 - `cd Klever-Desafio-Tecnico`
 
 3. Docker run mongoDB
-- `docker run -d --name=mongo -p 27017:27017 bitnami/mongodb`, this step could be skipped if you have mongoDB runing on port 27017.
+- `docker run -d --name=mongo -p 27017:27017 bitnami/mongodb`.
 
 4. Install requirements
 - `go mod tidy`.
@@ -43,6 +43,23 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
 - `go run api/main.go`
 - In this item you have permissions to do requests to localhost:5000 with protocol http as client of gRPC server.
 - This item is an extra for applicatio, because test requirements need only gRPC API.
+
+<h2>Run tests</h2>
+
+1. Run docker for test
+- `docker stop mongo`
+- `docker run -d --name=mongo_test -p 27017:27017 bitnami/mongodb`
+
+2. Run gRPC service 
+- `go run gRPC_server/main.go`
+
+3. Run tests
+- `go test -v ./test/*.go`
+- await tests
+
+4. Reset docker mongo
+- `docker container rm -f mongo_test` 
+- `docker start mongo`
 
 <h2>Manual tests with Postman (local)</h2>
 
@@ -363,3 +380,9 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
         ```javascript
         {}
         ```
+
+<h2>After steps</h2>
+
+- Struct tests better
+- Add more tests
+- Deploy gRPC
