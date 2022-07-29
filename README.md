@@ -33,6 +33,7 @@ The Technical Challenge consists of creating an API with Golang using gRPC with 
 - `docker run -d --name=mongo -p 27017:27017 bitnami/mongodb`.
 
 4. Install requirements
+- `go mod download`.
 - `go mod tidy`.
 
 5. Run gRPC service
