@@ -103,7 +103,7 @@ func (s UpvoteServer) Read(ctx context.Context, in *pb.FilterUpvote) (*pb.Upvote
 		upvote := pb.Upvote{
 			UpvoteId:  decodedUpvote.ObjectID.Hex(),
 			ServiceId: decodedUpvote.ServiceID,
-			UserId:    decodedUpvote.ServiceID,
+			UserId:    decodedUpvote.UserID,
 			Vote:      decodedUpvote.Vote,
 			Comment:   decodedUpvote.Comment,
 		}
@@ -169,7 +169,7 @@ func (s UpvoteServer) Update(ctx context.Context, in *pb.Upvote) (*pb.EmptyUpvot
 		return &pb.EmptyUpvote{}, err
 	}
 
-	userCollection := db.Collection("users")
+	userCollection := db.Collection("upvotes")
 
 	newUpvote := bson.M{
 		"$set": bson.M{
@@ -180,12 +180,12 @@ func (s UpvoteServer) Update(ctx context.Context, in *pb.Upvote) (*pb.EmptyUpvot
 		},
 	}
 
-	userId, err := primitive.ObjectIDFromHex(in.GetUserId())
+	upvoteId, err := primitive.ObjectIDFromHex(in.GetUpvoteId())
 	if err != nil {
 		return &pb.EmptyUpvote{}, err
 	}
 
-	filter := bson.M{"_id": userId}
+	filter := bson.M{"_id": upvoteId}
 
 	_, err = userCollection.UpdateOne(context.TODO(), filter, newUpvote)
 	if err != nil {
