@@ -27,7 +27,7 @@ type UpvoteServiceClient interface {
 	ReadById(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*Upvote, error)
 	Update(ctx context.Context, in *Upvote, opts ...grpc.CallOption) (*EmptyUpvote, error)
 	Delete(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*EmptyUpvote, error)
-	Score(ctx context.Context, in *ServiceId, opts ...grpc.CallOption) (*ScoreResponse, error)
+	Score(ctx context.Context, in *ScoreRequest, opts ...grpc.CallOption) (*ScoreResponse, error)
 }
 
 type upvoteServiceClient struct {
@@ -40,7 +40,7 @@ func NewUpvoteServiceClient(cc grpc.ClientConnInterface) UpvoteServiceClient {
 
 func (c *upvoteServiceClient) Create(ctx context.Context, in *NewUpvote, opts ...grpc.CallOption) (*Upvote, error) {
 	out := new(Upvote)
-	err := c.cc.Invoke(ctx, "/UpvoteService/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.UpvoteService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (c *upvoteServiceClient) Create(ctx context.Context, in *NewUpvote, opts ..
 
 func (c *upvoteServiceClient) Read(ctx context.Context, in *FilterUpvote, opts ...grpc.CallOption) (*Upvotes, error) {
 	out := new(Upvotes)
-	err := c.cc.Invoke(ctx, "/UpvoteService/Read", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.UpvoteService/Read", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *upvoteServiceClient) Read(ctx context.Context, in *FilterUpvote, opts .
 
 func (c *upvoteServiceClient) ReadById(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*Upvote, error) {
 	out := new(Upvote)
-	err := c.cc.Invoke(ctx, "/UpvoteService/ReadById", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.UpvoteService/ReadById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *upvoteServiceClient) ReadById(ctx context.Context, in *UpvoteId, opts .
 
 func (c *upvoteServiceClient) Update(ctx context.Context, in *Upvote, opts ...grpc.CallOption) (*EmptyUpvote, error) {
 	out := new(EmptyUpvote)
-	err := c.cc.Invoke(ctx, "/UpvoteService/Update", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.UpvoteService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,16 +76,16 @@ func (c *upvoteServiceClient) Update(ctx context.Context, in *Upvote, opts ...gr
 
 func (c *upvoteServiceClient) Delete(ctx context.Context, in *UpvoteId, opts ...grpc.CallOption) (*EmptyUpvote, error) {
 	out := new(EmptyUpvote)
-	err := c.cc.Invoke(ctx, "/UpvoteService/Delete", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.UpvoteService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *upvoteServiceClient) Score(ctx context.Context, in *ServiceId, opts ...grpc.CallOption) (*ScoreResponse, error) {
+func (c *upvoteServiceClient) Score(ctx context.Context, in *ScoreRequest, opts ...grpc.CallOption) (*ScoreResponse, error) {
 	out := new(ScoreResponse)
-	err := c.cc.Invoke(ctx, "/UpvoteService/Score", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.UpvoteService/Score", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ type UpvoteServiceServer interface {
 	ReadById(context.Context, *UpvoteId) (*Upvote, error)
 	Update(context.Context, *Upvote) (*EmptyUpvote, error)
 	Delete(context.Context, *UpvoteId) (*EmptyUpvote, error)
-	Score(context.Context, *ServiceId) (*ScoreResponse, error)
+	Score(context.Context, *ScoreRequest) (*ScoreResponse, error)
 	mustEmbedUnimplementedUpvoteServiceServer()
 }
 
@@ -124,7 +124,7 @@ func (UnimplementedUpvoteServiceServer) Update(context.Context, *Upvote) (*Empty
 func (UnimplementedUpvoteServiceServer) Delete(context.Context, *UpvoteId) (*EmptyUpvote, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedUpvoteServiceServer) Score(context.Context, *ServiceId) (*ScoreResponse, error) {
+func (UnimplementedUpvoteServiceServer) Score(context.Context, *ScoreRequest) (*ScoreResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Score not implemented")
 }
 func (UnimplementedUpvoteServiceServer) mustEmbedUnimplementedUpvoteServiceServer() {}
@@ -150,7 +150,7 @@ func _UpvoteService_Create_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UpvoteService/Create",
+		FullMethod: "/proto.UpvoteService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UpvoteServiceServer).Create(ctx, req.(*NewUpvote))
@@ -168,7 +168,7 @@ func _UpvoteService_Read_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UpvoteService/Read",
+		FullMethod: "/proto.UpvoteService/Read",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UpvoteServiceServer).Read(ctx, req.(*FilterUpvote))
@@ -186,7 +186,7 @@ func _UpvoteService_ReadById_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UpvoteService/ReadById",
+		FullMethod: "/proto.UpvoteService/ReadById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UpvoteServiceServer).ReadById(ctx, req.(*UpvoteId))
@@ -204,7 +204,7 @@ func _UpvoteService_Update_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UpvoteService/Update",
+		FullMethod: "/proto.UpvoteService/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UpvoteServiceServer).Update(ctx, req.(*Upvote))
@@ -222,7 +222,7 @@ func _UpvoteService_Delete_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UpvoteService/Delete",
+		FullMethod: "/proto.UpvoteService/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UpvoteServiceServer).Delete(ctx, req.(*UpvoteId))
@@ -231,7 +231,7 @@ func _UpvoteService_Delete_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _UpvoteService_Score_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ServiceId)
+	in := new(ScoreRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -240,10 +240,10 @@ func _UpvoteService_Score_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/UpvoteService/Score",
+		FullMethod: "/proto.UpvoteService/Score",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UpvoteServiceServer).Score(ctx, req.(*ServiceId))
+		return srv.(UpvoteServiceServer).Score(ctx, req.(*ScoreRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -252,7 +252,7 @@ func _UpvoteService_Score_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UpvoteService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "UpvoteService",
+	ServiceName: "proto.UpvoteService",
 	HandlerType: (*UpvoteServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
