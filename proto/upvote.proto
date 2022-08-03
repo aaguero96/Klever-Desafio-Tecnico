@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package proto;
+
 option go_package = "/pb/upvote;pb_upvote";
 
 message NewUpvote {
@@ -33,7 +35,7 @@ message EmptyUpvote {
   bool return = 1;
 }
 
-message ServiceId {
+message ScoreRequest {
   string serviceId = 1;
 }
 
@@ -49,7 +51,7 @@ service UpvoteService {
   rpc ReadById (UpvoteId) returns (Upvote) {}
   rpc Update (Upvote) returns (EmptyUpvote) {}
   rpc Delete (UpvoteId) returns (EmptyUpvote) {}
-  rpc Score (ServiceId) returns (ScoreResponse) {}
+  rpc Score (ScoreRequest) returns (ScoreResponse) {}
 }
 
 // command to create pb:
