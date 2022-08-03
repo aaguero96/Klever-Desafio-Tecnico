@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var TIME_WAIT = time.Second * 3
+var TIME_WAIT = time.Second * 5
 
 func TestMethodCreateByServiceService(t *testing.T) {
 	// Connect to database
