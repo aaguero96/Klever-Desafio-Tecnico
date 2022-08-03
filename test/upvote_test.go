@@ -779,3 +779,337 @@ func TestMethodDeleteByUpvoteService(t *testing.T) {
 	defer cancel()
 	db.Drop(ctx)
 }
+
+func TestMethodScoreByUpvoteService(t *testing.T) {
+	// Connect to database
+	// db, err := database.Connect()
+	// if err != nil {
+	// 	t.Errorf("Fail to connect with server")
+	// }
+
+	// Connect to server gRPC
+	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		t.Errorf("Fail to connect with server")
+	}
+
+	// Create new User Client
+	c := pb.NewUpvoteServiceClient(conn)
+
+	// Add elements to user e server
+	ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+	cUser := pbUser.NewUserServiceClient(conn)
+	user, err := cUser.Create(ctx, &pbUser.NewUser{
+		Name:     "André Aguero",
+		Email:    "andre.luiz_1996@hotmail.com",
+		Password: "123@bC",
+	})
+	cService := pbService.NewServiceServiceClient(conn)
+	service, err := cService.Create(ctx, &pbService.NewService{
+		Name: "Klever",
+		Site: "https://klever.io/",
+	})
+	idsToInput := map[string]string{
+		"user":    user.UserId,
+		"service": service.ServiceId,
+	}
+	cancel()
+
+	t.Run("Without down votes", func(t *testing.T) {
+		// Add elements in db
+		inputs := []pb.NewUpvote{
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 1",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 2",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 3",
+			},
+		}
+		idInputs := make([]string, 3)
+		for index, input := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			response, err := c.Create(ctx, &input)
+			idInputs[index] = response.UpvoteId
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+		response, err := c.Score(ctx, &pb.ScoreRequest{ServiceId: idsToInput["service"]})
+		if err != nil {
+			t.Errorf("Internal error, problem with normal input")
+		}
+		assert.Equal(t, response.Upvotes, int32(3))
+		assert.Equal(t, response.Downvotes, int32(0))
+		assert.Equal(t, response.Score, int32(3))
+		cancel()
+
+		// Delete items
+		for index, _ := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			_, err := c.Delete(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+	})
+
+	t.Run("Without up votes", func(t *testing.T) {
+		// Add elements in db
+		inputs := []pb.NewUpvote{
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 1",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 2",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 3",
+			},
+		}
+		idInputs := make([]string, 3)
+		for index, input := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			response, err := c.Create(ctx, &input)
+			if err != nil {
+				t.Errorf(err.Error())
+			}
+			idInputs[index] = response.UpvoteId
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+		response, err := c.Score(ctx, &pb.ScoreRequest{ServiceId: idsToInput["service"]})
+		if err != nil {
+			t.Errorf("Internal error, problem with normal input")
+		}
+		assert.Equal(t, response.Upvotes, int32(0))
+		assert.Equal(t, response.Downvotes, int32(3))
+		assert.Equal(t, response.Score, int32(-3))
+		cancel()
+
+		// Delete items
+		for index, _ := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			_, err := c.Delete(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+	})
+
+	t.Run("More up votes than down votes", func(t *testing.T) {
+		// Add elements in db
+		inputs := []pb.NewUpvote{
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 1",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 2",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 3",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 4",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 5",
+			},
+		}
+		idInputs := make([]string, 5)
+		for index, input := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			response, err := c.Create(ctx, &input)
+			idInputs[index] = response.UpvoteId
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+		response, err := c.Score(ctx, &pb.ScoreRequest{ServiceId: idsToInput["service"]})
+		if err != nil {
+			t.Errorf("Internal error, problem with normal input")
+		}
+		assert.Equal(t, response.Upvotes, int32(3))
+		assert.Equal(t, response.Downvotes, int32(2))
+		assert.Equal(t, response.Score, int32(1))
+		cancel()
+
+		// Delete items
+		for index, _ := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			_, err := c.Delete(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+	})
+
+	t.Run("More down votes than up votes", func(t *testing.T) {
+		// Add elements in db
+		inputs := []pb.NewUpvote{
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 1",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 2",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 3",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 4",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 5",
+			},
+		}
+		idInputs := make([]string, 5)
+		for index, input := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			response, err := c.Create(ctx, &input)
+			idInputs[index] = response.UpvoteId
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+		response, err := c.Score(ctx, &pb.ScoreRequest{ServiceId: idsToInput["service"]})
+		if err != nil {
+			t.Errorf("Internal error, problem with normal input")
+		}
+		assert.Equal(t, response.Upvotes, int32(2))
+		assert.Equal(t, response.Downvotes, int32(3))
+		assert.Equal(t, response.Score, int32(-1))
+		cancel()
+
+		// Delete items
+		for index, _ := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			_, err := c.Delete(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+	})
+
+	t.Run("Equal down votes and up votes", func(t *testing.T) {
+		// Add elements in db
+		inputs := []pb.NewUpvote{
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 1",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "up",
+				Comment:   "My comment 2",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 3",
+			},
+			{
+				ServiceId: idsToInput["service"],
+				UserId:    idsToInput["user"],
+				Vote:      "down",
+				Comment:   "My comment 4",
+			},
+		}
+		idInputs := make([]string, 4)
+		for index, input := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			response, err := c.Create(ctx, &input)
+			idInputs[index] = response.UpvoteId
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+		ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+		response, err := c.Score(ctx, &pb.ScoreRequest{ServiceId: idsToInput["service"]})
+		if err != nil {
+			t.Errorf("Internal error, problem with normal input")
+		}
+		assert.Equal(t, response.Upvotes, int32(2))
+		assert.Equal(t, response.Downvotes, int32(2))
+		assert.Equal(t, response.Score, int32(0))
+		cancel()
+
+		// Delete items
+		for index, _ := range inputs {
+			ctx, cancel := context.WithTimeout(context.TODO(), TIME_WAIT)
+			_, err := c.Delete(ctx, &pb.UpvoteId{UpvoteId: idInputs[index]})
+			if err != nil {
+				t.Errorf("Internal error, problem with normal input")
+			}
+			cancel()
+		}
+	})
+}
