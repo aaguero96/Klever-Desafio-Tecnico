@@ -218,6 +218,37 @@ func (s UpvoteServer) Delete(ctx context.Context, in *pb.UpvoteId) (*pb.EmptyUpv
 	return &pb.EmptyUpvote{}, nil
 }
 
+func (s UpvoteServer) Score(ctx context.Context, in *pb.ScoreRequest) (*pb.ScoreResponse, error) {
+	db, err := database.Connect()
+	if err != nil {
+		return &pb.ScoreResponse{}, err
+	}
+
+	upvoteCollection := db.Collection("upvotes")
+
+	filter := bson.M{"service_id": in.GetServiceId(), "vote": "up"}
+
+	countUp, err := upvoteCollection.CountDocuments(context.TODO(), filter)
+	if err != nil {
+		return &pb.ScoreResponse{}, err
+	}
+
+	filter = bson.M{"service_id": in.GetServiceId(), "vote": "down"}
+
+	countDown, err := upvoteCollection.CountDocuments(context.TODO(), filter)
+	if err != nil {
+		return &pb.ScoreResponse{}, err
+	}
+
+	score := countUp - countDown
+
+	return &pb.ScoreResponse{
+		Upvotes:   int32(countUp),
+		Downvotes: int32(countDown),
+		Score:     int32(score),
+	}, nil
+}
+
 func UpvoteService(s grpc.ServiceRegistrar, lis net.Listener) {
 	pb.RegisterUpvoteServiceServer(s, &UpvoteServer{})
 }
