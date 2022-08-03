@@ -33,12 +33,23 @@ message EmptyUpvote {
   bool return = 1;
 }
 
+message ServiceId {
+  string serviceId = 1;
+}
+
+message ScoreResponse {
+  int32 upvotes = 1;
+  int32 downvotes = 2;
+  int32 score = 3;
+}
+
 service UpvoteService {
   rpc Create (NewUpvote) returns (Upvote) {}
   rpc Read (FilterUpvote) returns (Upvotes) {}
   rpc ReadById (UpvoteId) returns (Upvote) {}
   rpc Update (Upvote) returns (EmptyUpvote) {}
   rpc Delete (UpvoteId) returns (EmptyUpvote) {}
+  rpc Score (ServiceId) returns (ScoreResponse) {}
 }
 
 // command to create pb:
